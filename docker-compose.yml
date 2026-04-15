@@ -29,5 +29,17 @@ services:
       DB_USER: root
       DB_PASS: root
       DB_NAME: futurekawa_db
+  api_central:
+    build: ./central/api
+    container_name: api_central
+    restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+      - api_country
+    environment:
+      PORT: 3001
+      COUNTRY_API_URL: http://api_country:3000
+
 volumes:
   mysql_data:
