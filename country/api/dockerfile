@@ -1,0 +1,23 @@
+# On part d'une image Node.js (TypeScript tourne sur Node)
+FROM node:18
+
+# On définit le dossier de travail dans le conteneur
+WORKDIR /app
+
+# On copie les fichiers de configuration (package.json)
+COPY package*.json ./
+
+# On installe les dépendances
+RUN npm install
+
+# On copie tout le reste du code source
+COPY . .
+
+# On compile le TypeScript en JavaScript
+RUN npm run build
+
+# L'API écoutera sur le port 3000 [cite: 185]
+EXPOSE 3000
+
+# On lance l'application
+CMD ["npm", "start"]

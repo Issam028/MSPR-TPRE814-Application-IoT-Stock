@@ -1,0 +1,33 @@
+services:
+  db_futurekawa:
+    image: mysql:8.0
+    container_name: mysql_futurekawa
+    restart: always
+    environment:
+      # Configuration de la base demandée [cite: 147, 183]
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: futurekawa_db
+    ports:
+      - "3307:3306"
+    volumes:
+      # Chemin mis à jour vers ton fichier init.sql
+      - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
+      # Persistance des données pour ne rien perdre au redémarrage
+      - mysql_data:/var/lib/mysql
+  # Ton API TypeScript
+  api_country:
+    build: ./country/api  # Docker va chercher le Dockerfile ici
+    container_name: api_country
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db_futurekawa  # Attend que la BDD soit prête
+    environment:
+      # L'hôte de la BDD est le NOM DU SERVICE défini au-dessus
+      DB_HOST: db_futurekawa
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: futurekawa_db
+volumes:
+  mysql_data:
