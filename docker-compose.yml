@@ -41,5 +41,14 @@ services:
       PORT: 3001
       COUNTRY_API_URL: http://api_country:3000
 
+  app_central:
+    build: ./central/app
+    container_name: app_central
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - api_central
+
 volumes:
   mysql_data:
