@@ -12,6 +12,11 @@ export class LotsController {
     return this.lotsService.findAll();
   }
 
+  @Get('expired')
+  findExpired() {
+    return this.lotsService.findExpired();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.lotsService.findOne(id);
