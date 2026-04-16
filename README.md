@@ -9,3 +9,15 @@ Ce projet consiste à concevoir et développer une solution applicative permetta
 - Détection des anomalies
 - Centralisation des données
 - Visualisation via une interface web
+
+## Mode simulation
+Le projet peut tourner sans Arduino grâce à un simulateur léger qui envoie des mesures fictives vers l'API `country`.
+
+### Lancement
+1. Copier [`.env.example`](.env.example) vers `.env` si vous voulez personnaliser les ports ou les variables.
+2. Lancer les services avec le profil `dev` : `docker compose --profile dev up --build`
+
+### Ce que fait le simulateur
+- Envoie un `POST /mesures` avec `id_entrepot`, `temperature` et `humidite`.
+- Tourne en boucle avec un intervalle configurable.
+- Peut produire des valeurs normales ou des valeurs d'alerte via `SIMULATOR_MODE`.

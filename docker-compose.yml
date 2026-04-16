@@ -1,14 +1,14 @@
 services:
   db_futurekawa:
-    image: mysql:8.0
+    image: mysql:8.4
     container_name: mysql_futurekawa
     restart: always
     environment:
       # Configuration de la base demandée [cite: 147, 183]
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: futurekawa_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-futurekawa_db}
     ports:
-      - "3307:3306"
+      - "${MYSQL_PORT:-3307}:3306"
     volumes:
       # Chemin mis à jour vers ton fichier init.sql
       - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -20,35 +20,50 @@ services:
     container_name: api_country
     restart: always
     ports:
-      - "3000:3000"
+      - "${COUNTRY_API_PORT:-3000}:3000"
     depends_on:
       - db_futurekawa  # Attend que la BDD soit prête
     environment:
       # L'hôte de la BDD est le NOM DU SERVICE défini au-dessus
-      DB_HOST: db_futurekawa
-      DB_USER: root
-      DB_PASS: root
-      DB_NAME: futurekawa_db
+      PORT: 3000
+      DB_HOST: ${DB_HOST:-db_futurekawa}
+      DB_USER: ${DB_USER:-root}
+      DB_PASS: ${DB_PASS:-root}
+      DB_NAME: ${DB_NAME:-futurekawa_db}
   api_central:
     build: ./central/api
     container_name: api_central
     restart: always
     ports:
-      - "3001:3001"
+      - "${CENTRAL_API_PORT:-3001}:3001"
     depends_on:
       - api_country
     environment:
       PORT: 3001
-      COUNTRY_API_URL: http://api_country:3000
+      COUNTRY_API_URL: ${COUNTRY_API_URL:-http://api_country:3000}
 
   app_central:
     build: ./central/app
     container_name: app_central
     restart: always
     ports:
-      - "8080:80"
+      - "${APP_PORT:-8080}:80"
     depends_on:
       - api_central
+
+  iot_simulator:
+    build: ./simulator
+    container_name: iot_simulator
+    restart: always
+    profiles:
+      - dev
+    depends_on:
+      - api_country
+    environment:
+      SIMULATOR_API_URL: ${SIMULATOR_API_URL:-http://api_country:3000}
+      SIMULATOR_ENTREPOT_ID: ${SIMULATOR_ENTREPOT_ID:-COFFEE-01}
+      SIMULATOR_INTERVAL_MS: ${SIMULATOR_INTERVAL_MS:-5000}
+      SIMULATOR_MODE: ${SIMULATOR_MODE:-mixed}
 
 volumes:
   mysql_data:

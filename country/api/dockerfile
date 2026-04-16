@@ -1,14 +1,17 @@
-# On part d'une image Node.js (TypeScript tourne sur Node)
-FROM node:18
+# On part d'une image Node.js déjà présente en local dans Docker.
+FROM n8nio/n8n:latest
+ENTRYPOINT []
 
 # On définit le dossier de travail dans le conteneur
 WORKDIR /app
+
+USER root
 
 # On copie les fichiers de configuration (package.json)
 COPY package*.json ./
 
 # On installe les dépendances
-RUN npm install
+RUN npm ci --include=dev
 
 # On copie tout le reste du code source
 COPY . .
