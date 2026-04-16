@@ -8,6 +8,7 @@ This document lists the HTTP routes found in the `central` and `country` APIs (c
   - GET /lots — list all lots (findAll)
   - GET /lots/:id — get one lot (findOne)
   - POST /lots — create a lot (create)
+  Body : { "id_lot": "LOT003", "pays": "Brésil", "exploitation": "Ferme A", "entrepot": "ENT01", "statut": "conforme" }
   - PUT /lots/:id — update a lot (update)
   - DELETE /lots/:id — delete a lot (remove) — returns HTTP 204
 
@@ -16,6 +17,11 @@ This document lists the HTTP routes found in the `central` and `country` APIs (c
   - GET /mesures/entrepot/:id — mesures by entrepot (findByEntrepot)
   - GET /mesures/:id — get one mesure (findOne)
   - POST /mesures — create a mesure (create)
+  BOdy : Body: {
+            "id_entrepot": "entrepot-1",
+            "temperature": 22.5,
+            "humidite": 65.3
+        }
 
 ## Country API (country/api)
 
