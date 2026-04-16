@@ -10,7 +10,19 @@
   gap: 12px;
 }
 
+.mesure-form-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
 .lot-form {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.mesure-form {
   display: flex;
   gap: 12px;
   flex: 1;
@@ -53,7 +65,8 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.btn-create-lot {
+.btn-create-lot,
+.btn-create-mesure {
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 600;
@@ -68,12 +81,14 @@
   white-space: nowrap;
 }
 
-.btn-create-lot:hover {
+.btn-create-lot:hover,
+.btn-create-mesure:hover {
   background: #2563eb;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-.btn-create-lot:active {
+.btn-create-lot:active,
+.btn-create-mesure:active {
   background: #1d4ed8;
   box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 }

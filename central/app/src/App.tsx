@@ -15,14 +15,6 @@ function App() {
 
   return (
     <div className="app-container">
-      <div>
-        <button onClick={() => console.log('hello world')}>
-          Cliquez-moi
-        </button>
-        <button onClick={getLots}>
-          Get Lots
-        </button>
-      </div>
       <div className="btn-bottom-left">
         <Button 
           label="Tests" 
