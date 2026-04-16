@@ -15,7 +15,7 @@ import { Mesure } from './mesures/mesure.entity';
       password: process.env.DB_PASS || 'root',
       database: process.env.DB_NAME || 'futurekawa_db',
       entities: [Lot, Mesure],
-      synchronize: false,
+      synchronize: true,
     }),
     LotsModule,
     MesuresModule,
