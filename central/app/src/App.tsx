@@ -1,27 +1,22 @@
 import { useState } from 'react'
-import { Button } from './components/Button/Button'
 import { TestsModal } from './components/Modal/Tests/TestsModal'
-import testIcon from './assets/icon/tests.png'
+import { Navbar } from './components/Navbar/Navbar'
 import './App.css'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
-    <div className="app-container">
-      <div className="btn-bottom-left">
-        <Button 
-          label="Tests" 
-          icon={testIcon} 
-          onClick={() => setIsModalOpen(true)} 
-        />
+    <div className="app-layout">
+      <Navbar onTestsClick={() => setIsModalOpen(true)} />
+      <div className="app-container">
+        <TestsModal 
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title="Tests"
+        >
+        </TestsModal>
       </div>
-      <TestsModal 
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          title="Tests"
-      >
-      </TestsModal>
     </div>
   )
 }
