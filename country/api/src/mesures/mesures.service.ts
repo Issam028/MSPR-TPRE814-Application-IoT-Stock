@@ -4,6 +4,11 @@ import { Repository } from 'typeorm';
 import { Mesure } from './mesure.entity';
 import { CreateMesureDto } from './dto/create-mesure.dto';
 
+const TEMPERATURE_MIN = 24;
+const TEMPERATURE_MAX = 30;
+const HUMIDITE_MIN = 50;
+const HUMIDITE_MAX = 60;
+
 @Injectable()
 export class MesuresService {
   constructor(
@@ -28,8 +33,33 @@ export class MesuresService {
     });
   }
 
+  findAlerts(): Promise<Mesure[]> {
+    return this.mesuresRepository.find({
+      where: { statut: 'en alerte' },
+      order: { timestamp: 'DESC' },
+    });
+  }
+
+  private evaluateStatus(dto: CreateMesureDto): string {
+    const temperatureOk =
+      dto.temperature !== null &&
+      dto.temperature !== undefined &&
+      dto.temperature >= TEMPERATURE_MIN &&
+      dto.temperature <= TEMPERATURE_MAX;
+    const humiditeOk =
+      dto.humidite !== null &&
+      dto.humidite !== undefined &&
+      dto.humidite >= HUMIDITE_MIN &&
+      dto.humidite <= HUMIDITE_MAX;
+
+    return temperatureOk && humiditeOk ? 'conforme' : 'en alerte';
+  }
+
   create(dto: CreateMesureDto): Promise<Mesure> {
-    const mesure = this.mesuresRepository.create(dto);
+    const mesure = this.mesuresRepository.create({
+      ...dto,
+      statut: this.evaluateStatus(dto),
+    });
     return this.mesuresRepository.save(mesure);
   }
 }

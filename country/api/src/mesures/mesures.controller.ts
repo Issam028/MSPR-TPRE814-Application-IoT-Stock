@@ -16,6 +16,11 @@ export class MesuresController {
     return this.mesuresService.findByEntrepot(id);
   }
 
+  @Get('alerts')
+  findAlerts() {
+    return this.mesuresService.findAlerts();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.mesuresService.findOne(+id);

@@ -16,4 +16,7 @@ export class Mesure {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   timestamp: Date;
+
+  @Column({ length: 20, nullable: true })
+  statut: string;
 }

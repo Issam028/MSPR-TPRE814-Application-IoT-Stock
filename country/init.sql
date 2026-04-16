@@ -14,5 +14,6 @@ CREATE TABLE mesures (
     id_entrepot VARCHAR(100),
     temperature FLOAT, -- en °C [cite: 144]
     humidite FLOAT,    -- en % [cite: 145]
+    statut VARCHAR(20), -- conforme ou en alerte
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
