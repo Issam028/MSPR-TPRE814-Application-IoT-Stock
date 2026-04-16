@@ -10,6 +10,15 @@ Ce projet consiste à concevoir et développer une solution applicative permetta
 - Centralisation des données
 - Visualisation via une interface web
 
+## Travail réalisé
+- Mise en place d'un simulateur IoT pour envoyer des mesures de température et d'humidité sans Arduino réel.
+- Réception et stockage des mesures dans l'API `country` et la base MySQL.
+- Ajout d'un statut d'alerte pour les mesures : `conforme` ou `en alerte`.
+- Ajout du statut des lots : `conforme`, `en alerte` ou `périmé` selon la date de stockage.
+- Mise en place d'un démarrage Docker avec `docker compose --profile dev up --build`.
+- Ajout d'un pipeline GitHub Actions pour vérifier le build de l'API `country`.
+- Ajout d'un flux CI/CD GitHub Actions pour construire et publier l'image Docker de l'API `country`.
+
 ## Mode simulation
 Le projet peut tourner sans Arduino grâce à un simulateur léger qui envoie des mesures fictives vers l'API `country`.
 
