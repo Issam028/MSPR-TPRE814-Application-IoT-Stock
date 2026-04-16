@@ -16,6 +16,11 @@ Le projet peut tourner sans Arduino grâce à un simulateur léger qui envoie de
 ### Lancement
 1. Copier [`.env.example`](.env.example) vers `.env` si vous voulez personnaliser les ports ou les variables.
 2. Lancer les services avec le profil `dev` : `docker compose --profile dev up --build`
+3. Ouvrir l'application sur `http://localhost:80`
+
+### Arrêt
+- Stopper les services avec `Ctrl + C`
+- Ou exécuter `docker compose down`
 
 ### Ce que fait le simulateur
 - Envoie un `POST /mesures` avec `id_entrepot`, `temperature` et `humidite`.
