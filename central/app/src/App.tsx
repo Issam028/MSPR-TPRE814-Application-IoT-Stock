@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { TestsModal } from './components/Modal/Tests/TestsModal'
 import { Navbar } from './components/Navbar/Navbar'
 import { Dashboard } from './page/Dashboard/Dashboard'
-import { Lots } from './page/Lots/Lots'
+import { Entrepots } from './page/Entrepots/Entrepots'
+import { Exploitations } from './page/Exploitations/Exploitations'
 import { DashboardProvider } from './context/DashboardContext'
 import './App.css'
 
@@ -22,7 +23,8 @@ function App() {
             title="Tests"
           ></TestsModal>
           {activePage === 'dashboard' && <Dashboard />}
-          {activePage === 'lots' && <Lots />}
+          {activePage === 'entrepots' && <Entrepots />}
+          {activePage === 'exploitations' && <Exploitations />}
         </div>
       </div>
     </DashboardProvider>

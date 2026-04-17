@@ -1,9 +1,9 @@
 import { Card } from '../../components/Card/Card'
 import { PaysCard } from '../../components/Card/Pays/PaysCard'
 import { LotSearchCard } from './Lots_Cards/LotSearchCard'
-import './Lots.css'
+import './Entrepots.css'
 
-export function Lots() {
+export function Entrepots() {
   return (
     <main className="lots">
       <div className="lots__top-bar">
