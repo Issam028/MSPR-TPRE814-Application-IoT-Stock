@@ -1,0 +1,19 @@
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 58, 138, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.15);
+  transform: translateY(-2px);
+}
+
+.card__content {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+}

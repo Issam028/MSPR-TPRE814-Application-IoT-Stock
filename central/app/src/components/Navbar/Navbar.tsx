@@ -10,6 +10,7 @@ interface NavItem {
 
 interface NavbarProps {
   onTestsClick?: () => void
+  onNavChange?: (id: string) => void
 }
 
 const navItems: NavItem[] = [
@@ -83,7 +84,7 @@ export function Navbar({ onTestsClick }: NavbarProps) {
             <circle cx="18.5" cy="18.5" r="2.5" />
           </svg>
         </div>
-        {!collapsed && <span className="navbar__title">IoT Stock</span>}
+        {!collapsed && <span className="navbar__title">Futur Kawa</span>}
       </div>
 
       <ul className="navbar__menu">
