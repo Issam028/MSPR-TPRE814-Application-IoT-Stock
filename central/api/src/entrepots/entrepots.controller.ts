@@ -10,6 +10,11 @@ export class EntrepotsController {
     return this.entrepotsService.findAll(country);
   }
 
+  @Get('exploitation/:id')
+  findByExploitation(@Param('country') country: string, @Param('id') id: string) {
+    return this.entrepotsService.findByExploitation(country, id);
+  }
+
   @Get(':id')
   findOne(@Param('country') country: string, @Param('id') id: string) {
     return this.entrepotsService.findOne(country, id);

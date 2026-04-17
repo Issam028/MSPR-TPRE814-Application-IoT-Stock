@@ -24,6 +24,13 @@ export class EntrepotsService {
     return data;
   }
 
+  async findByExploitation(country: string, id: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.getBaseUrl(country)}/entrepots/exploitation/${id}`),
+    );
+    return data;
+  }
+
   async findOne(country: string, id: string) {
     const { data } = await firstValueFrom(
       this.httpService.get(`${this.getBaseUrl(country)}/entrepots/${id}`),

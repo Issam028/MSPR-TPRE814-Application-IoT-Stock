@@ -1,18 +1,33 @@
 .pays-card__wrapper {
   position: relative;
+  overflow: visible;
 }
 
 .pays-card__content {
   position: relative;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   cursor: pointer;
+  gap: 8px;
+}
+
+.pays-card__text-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pays-card__label {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .pays-card__text {
   margin: 0;
-  flex: 1;
   background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -24,10 +39,10 @@
 .pays-card__chevron {
   width: 20px;
   height: 20px;
-  margin-left: 10px;
   pointer-events: none;
   flex-shrink: 0;
   transition: transform 0.2s ease;
+  margin-top: 2px;
 }
 
 .pays-card__chevron--open {

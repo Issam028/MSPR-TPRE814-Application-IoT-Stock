@@ -65,9 +65,12 @@ export function PaysCard({ className = '' }: PaysCardProps) {
             className="card__content pays-card__content"
             onClick={handleToggleDropdown}
           >
-            <p className="pays-card__text">
-              {selectedZoneId ? `Pays : ${selectedZoneId}` : 'Sélectionner un pays'}
-            </p>
+            <div className="pays-card__text-container">
+              <p className="pays-card__label">Pays:</p>
+              <p className="pays-card__text">
+                {selectedZoneId || 'Sélectionner un pays'}
+              </p>
+            </div>
             <svg 
               className={`pays-card__chevron ${isOpen ? 'pays-card__chevron--open' : ''}`}
               viewBox="0 0 24 24" 
