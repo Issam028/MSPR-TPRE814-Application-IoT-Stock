@@ -1,5 +1,6 @@
 import { Card } from '../../components/Card/Card'
 import { PaysCard } from '../../components/Card/Pays/PaysCard'
+import { LotSearchCard } from './Lots_Cards/LotSearchCard'
 import './Lots.css'
 
 export function Lots() {
@@ -8,13 +9,7 @@ export function Lots() {
       <div className="lots__top-bar">
         <div className="lots__left-column">
           <PaysCard className="lots__card-pays" />
-          <Card className="lots__card-below-pays" content={
-            <input
-              className="lots__input"
-              type="text"
-              placeholder="Lots"
-            />
-          } />
+          <LotSearchCard className="lots__card-below-pays" />
         </div>
         <Card className="lots__card-main" content={null} />
       </div>

@@ -1,0 +1,103 @@
+.lot-search-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lot-search-card__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lot-search-card__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e3a8a;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.lot-search-card__input-icon {
+  position: absolute;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.lot-search-card__input::placeholder {
+  color: #94a3b8;
+}
+
+.lot-search-card__input:focus {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+.lot-search-card__error {
+  margin: 0;
+  font-size: 13px;
+  color: #ef4444;
+}
+
+.lot-search-card__btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: #f0f4ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1e3a8a;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lot-search-card__btn:hover {
+  background: #dbeafe;
+}
+
+.lot-search-card__btn--active {
+  background: linear-gradient(90deg, rgba(60, 176, 222, 1) 0%, rgba(79, 117, 224, 1) 100%);
+  border: none;
+  padding: 9px 13px;
+}
+
+.lot-search-card__btn--active span {
+  color: #ffffff;
+}
+
+.lot-search-card__btn--active .lot-search-card__btn-icon {
+  color: #ffffff;
+}
+
+.lot-search-card__btn--active:hover {
+  background: linear-gradient(90deg, rgba(60, 176, 222, 1) 0%, rgba(79, 117, 224, 1) 100%);
+}
+
+.lot-search-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.lot-search-card__btn-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: #1d4ed8;
+}

@@ -16,3 +16,7 @@
   font-weight: bold;
   margin: 0;
 }
+
+.gradient-soft {
+  background: linear-gradient(90deg, rgba(60, 176, 222, 1) 0%, rgba(79, 117, 224, 1) 100%);
+}
