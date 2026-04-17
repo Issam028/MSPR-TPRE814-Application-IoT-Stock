@@ -66,7 +66,7 @@ export function PaysCard({ className = '' }: PaysCardProps) {
             onClick={handleToggleDropdown}
           >
             <div className="pays-card__text-container">
-              <p className="pays-card__label">Pays:</p>
+              <p className="pays-card__label">Pays :</p>
               <p className="pays-card__text">
                 {selectedZoneId || 'Sélectionner un pays'}
               </p>

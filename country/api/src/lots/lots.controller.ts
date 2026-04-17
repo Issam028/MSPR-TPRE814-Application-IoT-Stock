@@ -17,6 +17,11 @@ export class LotsController {
     return this.lotsService.findExpired();
   }
 
+  @Get('entrepot/:id')
+  findByEntrepot(@Param('id') id: string) {
+    return this.lotsService.findByEntrepot(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.lotsService.findOne(+id);

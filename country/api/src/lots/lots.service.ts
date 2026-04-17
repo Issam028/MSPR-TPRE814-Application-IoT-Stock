@@ -54,6 +54,11 @@ export class LotsService {
     return Promise.all(lots.map((lot) => this.syncStatus(lot)));
   }
 
+  async findByEntrepot(id_entrepot: number): Promise<Lot[]> {
+    const lots = await this.lotsRepository.findBy({ id_entrepot });
+    return Promise.all(lots.map((lot) => this.syncStatus(lot)));
+  }
+
   async findOne(id: number): Promise<Lot> {
     const lot = await this.lotsRepository.findOneBy({ id_lot: id });
     if (!lot) throw new NotFoundException('Lot non trouvé');

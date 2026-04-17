@@ -10,6 +10,11 @@ export class LotsController {
     return this.lotsService.findAll(country);
   }
 
+  @Get('entrepot/:id')
+  findByEntrepot(@Param('country') country: string, @Param('id') id: string) {
+    return this.lotsService.findByEntrepot(country, id);
+  }
+
   @Get(':id')
   findOne(@Param('country') country: string, @Param('id') id: string) {
     return this.lotsService.findOne(country, id);
