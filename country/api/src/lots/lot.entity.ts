@@ -6,7 +6,6 @@ export class Lot {
   id_lot: string;
 
   @Column({ length: 50, nullable: true })
-  pays: string;
 
   @Column({ length: 100, nullable: true })
   exploitation: string;

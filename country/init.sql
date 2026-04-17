@@ -1,7 +1,6 @@
 -- Création de la table pour les stocks de café
 CREATE TABLE lots (
     id_lot VARCHAR(50) PRIMARY KEY,
-    pays VARCHAR(50),
     exploitation VARCHAR(100),
     entrepot VARCHAR(100),
     date_stockage TIMESTAMP,

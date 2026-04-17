@@ -1,12 +1,12 @@
 services:
-  db_futurekawa:
+  db_Brazil:
     image: mysql:8.4
-    container_name: mysql_futurekawa
+    container_name: mysql_Brazil
     restart: always
     environment:
       # Configuration de la base demandée [cite: 147, 183]
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-futurekawa_db}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-brazil_db}
     ports:
       - "${MYSQL_PORT:-3307}:3306"
     volumes:
@@ -14,6 +14,20 @@ services:
       - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
       # Persistance des données pour ne rien perdre au redémarrage
       - mysql_data:/var/lib/mysql
+
+  db_Colombia:
+    image: mysql:8.4
+    container_name: mysql_Colombia
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${COLOMBIA_DATABASE:-colombia_db}
+    ports:
+      - "${COLOMBIA_MYSQL_PORT:-3308}:3306"
+    volumes:
+      - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_colombia_data:/var/lib/mysql
+
   # Ton API TypeScript
   api_country:
     build: ./country/api  # Docker va chercher le Dockerfile ici
@@ -22,14 +36,14 @@ services:
     ports:
       - "${COUNTRY_API_PORT:-3000}:3000"
     depends_on:
-      - db_futurekawa  # Attend que la BDD soit prête
+      - db_Brazil  # Attend que la BDD soit prête
     environment:
       # L'hôte de la BDD est le NOM DU SERVICE défini au-dessus
       PORT: 3000
-      DB_HOST: ${DB_HOST:-db_futurekawa}
+      DB_HOST: ${DB_HOST:-db_Brazil}
       DB_USER: ${DB_USER:-root}
       DB_PASS: ${DB_PASS:-root}
-      DB_NAME: ${DB_NAME:-futurekawa_db}
+      DB_NAME: ${DB_NAME:-brazil_db}
   api_central:
     build: ./central/api
     container_name: api_central
@@ -67,3 +81,4 @@ services:
 
 volumes:
   mysql_data:
+  mysql_colombia_data:

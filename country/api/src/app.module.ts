@@ -13,7 +13,7 @@ import { Mesure } from './mesures/mesure.entity';
       port: 3306,
       username: process.env.DB_USER || 'root',
       password: process.env.DB_PASS || 'root',
-      database: process.env.DB_NAME || 'futurekawa_db',
+      database: process.env.DB_NAME || 'brazil_db',
       entities: [Lot, Mesure],
       synchronize: true,
     }),
