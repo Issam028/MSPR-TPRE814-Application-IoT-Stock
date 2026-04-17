@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Card } from '../../../components/Card/Card'
 import LotsIcon from '../../../assets/icon/lots.svg?react'
 import SearchIcon from '../../../assets/icon/search.svg?react'
+import { useDashboardContext } from '../../../context/DashboardContext'
 import './LotSearchCard.css'
 
 interface Lot {
@@ -10,17 +11,26 @@ interface Lot {
   date_stockage: string
 }
 
+const COUNTRY_SLUGS: Record<string, string> = {
+  'Brésil': 'brazil',
+  'Colombie': 'colombia',
+}
+
 export function LotSearchCard({ className }: { className?: string }) {
+  const { selectedZoneId } = useDashboardContext()
   const [lots, setLots] = useState<Lot[]>([])
   const [error, setError] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  useEffect(() => { handleLotChange('') }, [])
+  useEffect(() => { handleLotChange('') }, [selectedZoneId])
 
   const handleLotChange = async (value: string) => {
+    const countrySlug = selectedZoneId ? COUNTRY_SLUGS[selectedZoneId] : null
+    if (!countrySlug) { setLots([]); setError(false); return }
+
     const url = value.trim()
-      ? `http://localhost:3001/lots/${encodeURIComponent(value)}`
-      : `http://localhost:3001/lots`
+      ? `http://localhost:3001/${countrySlug}/lots/${encodeURIComponent(value)}`
+      : `http://localhost:3001/${countrySlug}/lots`
     const response = await fetch(url)
     if (!response.ok) { console.error('Erreur lors de la récupération du lot'); setLots([]); setError(true); return }
     const data = await response.json()

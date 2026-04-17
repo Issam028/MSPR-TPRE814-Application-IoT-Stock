@@ -1,33 +1,33 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, HttpCode } from '@nestjs/common';
 import { LotsService } from './lots.service';
 
-@Controller('lots')
+@Controller(':country/lots')
 export class LotsController {
   constructor(private readonly lotsService: LotsService) {}
 
   @Get()
-  findAll() {
-    return this.lotsService.findAll();
+  findAll(@Param('country') country: string) {
+    return this.lotsService.findAll(country);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lotsService.findOne(id);
+  findOne(@Param('country') country: string, @Param('id') id: string) {
+    return this.lotsService.findOne(country, id);
   }
 
   @Post()
-  create(@Body() body: any) {
-    return this.lotsService.create(body);
+  create(@Param('country') country: string, @Body() body: any) {
+    return this.lotsService.create(country, body);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.lotsService.update(id, body);
+  update(@Param('country') country: string, @Param('id') id: string, @Body() body: any) {
+    return this.lotsService.update(country, id, body);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.lotsService.remove(id);
+  remove(@Param('country') country: string, @Param('id') id: string) {
+    return this.lotsService.remove(country, id);
   }
 }

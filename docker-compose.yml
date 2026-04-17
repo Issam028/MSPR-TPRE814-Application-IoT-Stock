@@ -40,23 +40,38 @@ services:
       retries: 5
       start_period: 30s
 
-  # Ton API TypeScript
-  api_country:
-    build: ./country/api  # Docker va chercher le Dockerfile ici
-    container_name: api_country
+  api_brazil:
+    build: ./country/api
+    container_name: api_brazil
     restart: always
     ports:
-      - "${COUNTRY_API_PORT:-3000}:3000"
+      - "${BRAZIL_API_PORT:-3000}:3000"
     depends_on:
       db_Brazil:
         condition: service_healthy
     environment:
-      # L'hôte de la BDD est le NOM DU SERVICE défini au-dessus
       PORT: 3000
-      DB_HOST: ${DB_HOST:-db_Brazil}
+      DB_HOST: db_Brazil
       DB_USER: ${DB_USER:-root}
       DB_PASS: ${DB_PASS:-root}
-      DB_NAME: ${DB_NAME:-brazil_db}
+      DB_NAME: ${MYSQL_DATABASE:-brazil_db}
+
+  api_colombia:
+    build: ./country/api
+    container_name: api_colombia
+    restart: always
+    ports:
+      - "${COLOMBIA_API_PORT:-3002}:3000"
+    depends_on:
+      db_Colombia:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DB_HOST: db_Colombia
+      DB_USER: ${DB_USER:-root}
+      DB_PASS: ${DB_PASS:-root}
+      DB_NAME: ${COLOMBIA_DATABASE:-colombia_db}
+
   api_central:
     build: ./central/api
     container_name: api_central
@@ -64,10 +79,12 @@ services:
     ports:
       - "${CENTRAL_API_PORT:-3001}:3001"
     depends_on:
-      - api_country
+      - api_brazil
+      - api_colombia
     environment:
       PORT: 3001
-      COUNTRY_API_URL: ${COUNTRY_API_URL:-http://api_country:3000}
+      BRAZIL_API_URL: ${BRAZIL_API_URL:-http://api_brazil:3000}
+      COLOMBIA_API_URL: ${COLOMBIA_API_URL:-http://api_colombia:3000}
 
   app_central:
     build: ./central/app
@@ -85,9 +102,9 @@ services:
     profiles:
       - dev
     depends_on:
-      - api_country
+      - api_brazil
     environment:
-      SIMULATOR_API_URL: ${SIMULATOR_API_URL:-http://api_country:3000}
+      SIMULATOR_API_URL: ${SIMULATOR_API_URL:-http://api_brazil:3000}
       SIMULATOR_ENTREPOT_ID: ${SIMULATOR_ENTREPOT_ID:-COFFEE-01}
       SIMULATOR_INTERVAL_MS: ${SIMULATOR_INTERVAL_MS:-5000}
       SIMULATOR_MODE: ${SIMULATOR_MODE:-mixed}
