@@ -19,7 +19,7 @@ export class LotsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.lotsService.findOne(id);
+    return this.lotsService.findOne(+id);
   }
 
   @Post()
@@ -29,12 +29,12 @@ export class LotsController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateLotDto) {
-    return this.lotsService.update(id, dto);
+    return this.lotsService.update(+id, dto);
   }
 
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id') id: string) {
-    return this.lotsService.remove(id);
+    return this.lotsService.remove(+id);
   }
 }

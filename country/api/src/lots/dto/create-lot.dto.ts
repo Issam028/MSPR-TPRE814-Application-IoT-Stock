@@ -1,7 +1,6 @@
 export class CreateLotDto {
-  id_lot: string;
-  exploitation?: string;
-  entrepot?: string;
+  id_exploitation?: number;
+  id_entrepot?: number;
   date_stockage?: Date;
   statut?: string;
 }

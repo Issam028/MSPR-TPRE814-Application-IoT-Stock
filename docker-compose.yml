@@ -14,6 +14,12 @@ services:
       - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
       # Persistance des données pour ne rien perdre au redémarrage
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   db_Colombia:
     image: mysql:8.4
@@ -27,6 +33,12 @@ services:
     volumes:
       - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql_colombia_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   # Ton API TypeScript
   api_country:
@@ -36,7 +48,8 @@ services:
     ports:
       - "${COUNTRY_API_PORT:-3000}:3000"
     depends_on:
-      - db_Brazil  # Attend que la BDD soit prête
+      db_Brazil:
+        condition: service_healthy
     environment:
       # L'hôte de la BDD est le NOM DU SERVICE défini au-dessus
       PORT: 3000

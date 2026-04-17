@@ -1,6 +1,6 @@
 export class UpdateLotDto {
-  exploitation?: string;
-  entrepot?: string;
+  id_exploitation?: number;
+  id_entrepot?: number;
   date_stockage?: Date;
   statut?: string;
 }

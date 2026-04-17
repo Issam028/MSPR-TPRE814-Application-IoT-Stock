@@ -1,19 +1,17 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('lots')
 export class Lot {
-  @PrimaryColumn({ length: 50 })
-  id_lot: string;
+  @PrimaryGeneratedColumn({ type: 'bigint' })
+  id_lot: number;
 
-  @Column({ length: 50, nullable: true })
+  @Column({ type: 'bigint', nullable: true })
+  id_exploitation: number;
 
-  @Column({ length: 100, nullable: true })
-  exploitation: string;
+  @Column({ type: 'bigint', nullable: true })
+  id_entrepot: number;
 
-  @Column({ length: 100, nullable: true })
-  entrepot: string;
-
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date_stockage: Date;
 
   @Column({ length: 20, nullable: true })

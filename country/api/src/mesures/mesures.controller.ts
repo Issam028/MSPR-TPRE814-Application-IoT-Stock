@@ -13,7 +13,7 @@ export class MesuresController {
 
   @Get('entrepot/:id')
   findByEntrepot(@Param('id') id: string) {
-    return this.mesuresService.findByEntrepot(id);
+    return this.mesuresService.findByEntrepot(+id);
   }
 
   @Get('alerts')

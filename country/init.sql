@@ -1,16 +1,16 @@
 -- Création de la table pour les stocks de café
 CREATE TABLE lots (
-    id_lot VARCHAR(50) PRIMARY KEY,
-    exploitation VARCHAR(100),
-    entrepot VARCHAR(100),
-    date_stockage TIMESTAMP,
+    id_lot BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_exploitation BIGINT,
+    id_entrepot BIGINT,
+    date_stockage TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     statut VARCHAR(20) -- conforme, en alerte, périmé [cite: 138]
 );
 
 -- Création de la table pour les relevés des capteurs
 CREATE TABLE mesures (
     id_mesure INT AUTO_INCREMENT PRIMARY KEY,
-    id_entrepot VARCHAR(100),
+    id_entrepot BIGINT,
     temperature FLOAT, -- en °C [cite: 144]
     humidite FLOAT,    -- en % [cite: 145]
     statut VARCHAR(20), -- conforme ou en alerte

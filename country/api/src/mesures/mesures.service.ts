@@ -26,7 +26,7 @@ export class MesuresService {
     return mesure;
   }
 
-  findByEntrepot(idEntrepot: string): Promise<Mesure[]> {
+  findByEntrepot(idEntrepot: number): Promise<Mesure[]> {
     return this.mesuresRepository.find({
       where: { id_entrepot: idEntrepot },
       order: { timestamp: 'DESC' },

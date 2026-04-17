@@ -5,8 +5,8 @@ export class Mesure {
   @PrimaryGeneratedColumn()
   id_mesure: number;
 
-  @Column({ length: 100, nullable: true })
-  id_entrepot: string;
+  @Column({ type: 'bigint', nullable: true })
+  id_entrepot: number;
 
   @Column({ type: 'float', nullable: true })
   temperature: number;

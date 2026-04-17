@@ -54,7 +54,7 @@ export class LotsService {
     return Promise.all(lots.map((lot) => this.syncStatus(lot)));
   }
 
-  async findOne(id: string): Promise<Lot> {
+  async findOne(id: number): Promise<Lot> {
     const lot = await this.lotsRepository.findOneBy({ id_lot: id });
     if (!lot) throw new NotFoundException('Lot non trouvé');
     return this.syncStatus(lot);
@@ -73,7 +73,7 @@ export class LotsService {
     return this.lotsRepository.save(lot);
   }
 
-  async update(id: string, dto: UpdateLotDto): Promise<Lot> {
+  async update(id: number, dto: UpdateLotDto): Promise<Lot> {
     const existingLot = await this.findOne(id);
     const updatedLot = this.lotsRepository.create({
       ...existingLot,
@@ -85,7 +85,7 @@ export class LotsService {
     return this.findOne(id);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     await this.findOne(id);
     await this.lotsRepository.delete({ id_lot: id });
   }
