@@ -6,9 +6,6 @@ export class Lot {
   id_lot: number;
 
   @Column({ type: 'bigint', nullable: true })
-  id_exploitation: number;
-
-  @Column({ type: 'bigint', nullable: true })
   id_entrepot: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

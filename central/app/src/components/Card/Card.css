@@ -5,6 +5,18 @@
   overflow: hidden;
 }
 
+.card__title {
+  margin: 0;
+  padding: 20px 20px 16px;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border-bottom: 2px solid #e0e7ff;
+}
+
 .card__content {
   padding: 16px 20px;
   font-size: 14px;

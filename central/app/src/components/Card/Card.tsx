@@ -6,9 +6,10 @@ interface CardProps {
   className?: string
 }
 
-export function Card({ content, className = '' }: CardProps) {
+export function Card({ title, content, className = '' }: CardProps) {
   return (
     <div className={`card ${className}`}>
+      {title && <h1 className="card__title">{title}</h1>}
       <div className="card__content">
         {content}
       </div>

@@ -22,7 +22,16 @@
 }
 
 .gradient-exploitation {
-  background: linear-gradient(90deg,rgba(91, 168, 123, 1) 1%, rgba(0, 140, 37, 1) 100%);
+  background: linear-gradient(0deg,rgba(113, 168, 81, 1) 1%, rgba(2, 125, 25, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  margin: 0;
+}
+
+.gradient-entrepots {
+  background: linear-gradient(0deg,rgba(176, 158, 23, 1) 1%, rgba(171, 105, 0, 1) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
