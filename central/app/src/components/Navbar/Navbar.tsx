@@ -69,9 +69,14 @@ const navItems: NavItem[] = [
   },
 ]
 
-export function Navbar({ onTestsClick }: NavbarProps) {
+export function Navbar({ onTestsClick, onNavChange }: NavbarProps) {
   const [activeId, setActiveId] = useState('dashboard')
   const [collapsed, setCollapsed] = useState(false)
+
+  const handleNavClick = (id: string) => {
+    setActiveId(id)
+    onNavChange?.(id)
+  }
 
   return (
     <nav className={`navbar${collapsed ? ' navbar--collapsed' : ''}`}>
@@ -92,7 +97,7 @@ export function Navbar({ onTestsClick }: NavbarProps) {
           <li key={item.id}>
             <button
               className={`navbar__item${activeId === item.id ? ' navbar__item--active' : ''}`}
-              onClick={() => setActiveId(item.id)}
+              onClick={() => handleNavClick(item.id)}
               title={collapsed ? item.label : undefined}
             >
               <span className="navbar__icon">{item.icon}</span>

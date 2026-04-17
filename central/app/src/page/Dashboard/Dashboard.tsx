@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Map1 from '../../assets/map1.svg?react'
 import { Card } from '../../components/Card/Card'
+import { PaysCard } from '../../components/Card/Pays/PaysCard'
+import { useDashboardContext } from '../../context/DashboardContext'
 import './Dashboard.css'
 
 export function Dashboard() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
-  const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null)
+  const { selectedZoneId, setSelectedZoneId } = useDashboardContext()
 
   useEffect(() => {
     const container = mapContainerRef.current
@@ -31,6 +33,18 @@ export function Dashboard() {
         path.classList.add('non-interactive')
       }
     })
+
+    // Restaurer la classe selected si une zone est déjà sélectionnée
+    if (selectedZoneId) {
+      // Chercher la zone correspondante
+      const selectedZoneKey = Object.keys(ZONE_NAMES).find(key => ZONE_NAMES[key] === selectedZoneId)
+      if (selectedZoneKey) {
+        const pathIndex = parseInt(selectedZoneKey.split('-')[1]) - 1
+        if (paths[pathIndex]) {
+          paths[pathIndex].classList.add('selected')
+        }
+      }
+    }
 
     // Détecteur de clic sur les zones
     const handlePathClick = (event: Event) => {
@@ -62,32 +76,22 @@ export function Dashboard() {
     return () => {
       container.removeEventListener('click', handlePathClick as EventListener)
     }
-  }, [])
+  }, [selectedZoneId, setSelectedZoneId])
 
   return (
     <main className="dashboard">
+      <PaysCard className="dashboard__card-top-left" />
       <Card 
-        className="dashboard__card-top-left"
+        className="dashboard__card-top-right"
         content={
-          selectedZoneId ? (
-            <div>
-              <p style={{
-                margin: 0,
-                background: 'linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                fontWeight: 'bold'
-              }}>
-                Pays : {selectedZoneId}
-              </p>
-              <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '8px' }}>
-                Cliquez sur un pays pour le sélectionner.
-              </p>
-            </div>
-          ) : (
-            <p style={{ color: '#94a3b8' }}>Aucun pays sélectionné</p>
-          )
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#94a3b8', fontWeight: '500' }}>
+              Lots
+            </p>
+            <p className="gradient-text" style={{ fontSize: '48px', margin: 0, lineHeight: 1 }}>
+              148
+            </p>
+          </div>
         }
       />
       <div className="dashboard__map-wrapper">

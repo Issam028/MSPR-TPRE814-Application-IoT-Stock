@@ -1,0 +1,59 @@
+.lots {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+  background: #f0f4ff;
+  padding: 24px;
+  gap: 24px;
+  overflow: hidden;
+}
+
+.lots__top-bar {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+  flex: 1;
+}
+
+.lots__left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.lots__card-pays {
+  width: 100%;
+}
+
+.lots__card-below-pays {
+  flex: 1;
+}
+
+.lots__card-main {
+  flex: 1;
+}
+
+.lots__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e3a8a;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.lots__input::placeholder {
+  color: #94a3b8;
+}
+
+.lots__input:focus {
+  border-color: #2563eb;
+  background: #fff;
+}

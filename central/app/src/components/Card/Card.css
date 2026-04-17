@@ -3,12 +3,6 @@
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(30, 58, 138, 0.1);
   overflow: hidden;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.card:hover {
-  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.15);
-  transform: translateY(-2px);
 }
 
 .card__content {
@@ -16,4 +10,13 @@
   font-size: 14px;
   color: #334155;
   line-height: 1.5;
+}
+
+.card__country-name {
+  margin: 0;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
 }

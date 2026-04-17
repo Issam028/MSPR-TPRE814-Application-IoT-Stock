@@ -15,6 +15,14 @@
   z-index: 10;
 }
 
+.dashboard__card-top-right {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 300px;
+  z-index: 10;
+}
+
 .dashboard__map-wrapper {
   display: flex;
   align-items: center;
@@ -50,13 +58,11 @@
 .dashboard__map path.interactive:hover {
   fill: url(#map-hover-gradient);
   transform: scale(1.01);
-  filter: drop-shadow(0 4px 12px rgba(30, 58, 138, 0.45));
 }
 
 .dashboard__map path.interactive.selected {
   fill: url(#map-hover-gradient);
   transform: scale(1.01);
-  filter: drop-shadow(0 4px 12px rgba(30, 58, 138, 0.45));
 }
 
 .dashboard__header {
