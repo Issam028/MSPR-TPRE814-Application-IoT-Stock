@@ -34,6 +34,9 @@ export function Dashboard() {
       }
     })
 
+    // Retirer la classe selected de tous les paths avant de restaurer la sélection
+    paths.forEach(p => p.classList.remove('selected'))
+
     // Restaurer la classe selected si une zone est déjà sélectionnée
     if (selectedZoneId) {
       // Chercher la zone correspondante

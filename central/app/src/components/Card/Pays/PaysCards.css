@@ -1,0 +1,72 @@
+.pays-card__wrapper {
+  position: relative;
+}
+
+.pays-card__content {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.pays-card__text {
+  margin: 0;
+  flex: 1;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.pays-card__chevron {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  pointer-events: none;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.pays-card__chevron--open {
+  transform: rotate(180deg);
+}
+
+.pays-card__dropdown {
+  position: fixed;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 58, 138, 0.1);
+  overflow: hidden;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.pays-card__option {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pays-card__option:last-child {
+  border-bottom: none;
+}
+
+.pays-card__option:hover {
+  background-color: #f0f4f8;
+}
+
+.pays-card__option--selected {
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  background-color: #f0f4f8;
+}
