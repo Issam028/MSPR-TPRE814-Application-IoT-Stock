@@ -20,3 +20,12 @@
 .gradient-soft {
   background: linear-gradient(90deg, rgba(60, 176, 222, 1) 0%, rgba(79, 117, 224, 1) 100%);
 }
+
+.gradient-exploitation {
+  background: linear-gradient(90deg,rgba(91, 168, 123, 1) 1%, rgba(0, 140, 37, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+  margin: 0;
+}
