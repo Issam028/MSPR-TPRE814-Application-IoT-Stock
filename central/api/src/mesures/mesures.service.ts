@@ -38,6 +38,13 @@ export class MesuresService {
     return data;
   }
 
+  async findLatestByEntrepot(country: string, idEntrepot: string) {
+    const { data } = await firstValueFrom(
+      this.httpService.get(`${this.getBaseUrl(country)}/mesures/entrepot/${idEntrepot}/latest`),
+    );
+    return data;
+  }
+
   async create(country: string, body: any) {
     const { data } = await firstValueFrom(
       this.httpService.post(`${this.getBaseUrl(country)}/mesures`, body),

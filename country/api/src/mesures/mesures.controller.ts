@@ -11,6 +11,11 @@ export class MesuresController {
     return this.mesuresService.findAll();
   }
 
+  @Get('entrepot/:id/latest')
+  findLatestByEntrepot(@Param('id') id: string) {
+    return this.mesuresService.findLatestByEntrepot(+id);
+  }
+
   @Get('entrepot/:id')
   findByEntrepot(@Param('id') id: string) {
     return this.mesuresService.findByEntrepot(+id);

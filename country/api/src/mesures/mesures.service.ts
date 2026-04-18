@@ -33,6 +33,15 @@ export class MesuresService {
     });
   }
 
+  async findLatestByEntrepot(idEntrepot: number): Promise<Mesure> {
+    const mesure = await this.mesuresRepository.findOne({
+      where: { id_entrepot: idEntrepot },
+      order: { timestamp: 'DESC' },
+    });
+    if (!mesure) throw new NotFoundException('Aucune mesure trouvée pour cet entrepôt');
+    return mesure;
+  }
+
   findAlerts(): Promise<Mesure[]> {
     return this.mesuresRepository.find({
       where: { statut: 'en alerte' },
