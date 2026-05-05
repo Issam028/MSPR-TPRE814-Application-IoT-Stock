@@ -51,10 +51,11 @@ services:
         condition: service_healthy
     environment:
       PORT: 3000
-      DB_HOST: db_Brazil
-      DB_USER: ${DB_USER:-root}
-      DB_PASS: ${DB_PASS:-root}
-      DB_NAME: ${MYSQL_DATABASE:-brazil_db}
+      DB_HOST: ${BRAZIL_DB_HOST:-db_Brazil}
+      DB_PORT: ${BRAZIL_DB_PORT:-3306}
+      DB_USER: ${BRAZIL_DB_USER:-root}
+      DB_PASS: ${BRAZIL_DB_PASS:-root}
+      DB_NAME: ${BRAZIL_DB_NAME:-brazil_db}
 
   api_colombia:
     build: ./country/api
@@ -67,10 +68,11 @@ services:
         condition: service_healthy
     environment:
       PORT: 3000
-      DB_HOST: db_Colombia
-      DB_USER: ${DB_USER:-root}
-      DB_PASS: ${DB_PASS:-root}
-      DB_NAME: ${COLOMBIA_DATABASE:-colombia_db}
+      DB_HOST: ${COLOMBIA_DB_HOST:-db_Colombia}
+      DB_PORT: ${COLOMBIA_DB_PORT:-3306}
+      DB_USER: ${COLOMBIA_DB_USER:-root}
+      DB_PASS: ${COLOMBIA_DB_PASS:-root}
+      DB_NAME: ${COLOMBIA_DB_NAME:-colombia_db}
 
   api_central:
     build: ./central/api
