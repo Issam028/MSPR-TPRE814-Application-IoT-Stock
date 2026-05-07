@@ -25,7 +25,38 @@ Le projet peut tourner sans Arduino grâce à un simulateur léger qui envoie de
 ### Lancement
 1. Copier [`.env.example`](.env.example) vers `.env` si vous voulez personnaliser les ports ou les variables.
 2. Lancer les services avec le profil `dev` : `docker compose --profile dev up --build`
-3. Ouvrir l'application sur `http://localhost:80`
+3. Ouvrir l'application sur `http://localhost:8080`
+
+### Commandes terminal
+Depuis PowerShell, se placer dans le dossier du projet :
+
+```powershell
+cd "C:\Users\reyis\Desktop\Projects\MSPR-TPRE814-Application-IoT-Stock"
+```
+
+Lancer l'application avec la simulation IoT :
+
+```powershell
+docker compose --profile dev up --build -d
+```
+
+Voir les valeurs envoyees par le simulateur IoT :
+
+```powershell
+docker logs -f iot_simulator
+```
+
+Envoyer une mesure IoT manuelle vers l'API `country` :
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://localhost:3000/mesures" -ContentType "application/json" -Body '{"id_entrepot":1,"temperature":26.5,"humidite":55}'
+```
+
+Envoyer une mesure en alerte :
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://localhost:3000/mesures" -ContentType "application/json" -Body '{"id_entrepot":1,"temperature":34,"humidite":84}'
+```
 
 ### Arrêt
 - Stopper les services avec `Ctrl + C`
