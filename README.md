@@ -66,3 +66,10 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:3000/mesures" -ContentType
 - Envoie un `POST /mesures` avec `id_entrepot`, `temperature` et `humidite`.
 - Tourne en boucle avec un intervalle configurable.
 - Peut produire des valeurs normales ou des valeurs d'alerte via `SIMULATOR_MODE`.
+
+### Version MicroPython
+Le dossier [`simulator/micropython`](simulator/micropython) contient une version MicroPython du simulateur IoT.
+
+Cette version represente le code qui pourrait tourner sur une carte ESP32, ESP8266 ou Raspberry Pi Pico W. Elle se connecte au WiFi, genere des mesures fictives, puis envoie un `POST /mesures` vers l'API `country`.
+
+Le simulateur Docker reste utile pour les tests locaux rapides, tandis que la version MicroPython montre la partie "objet connecte" attendue dans un contexte IoT.
