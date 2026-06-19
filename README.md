@@ -73,3 +73,25 @@ Le dossier [`simulator/micropython`](simulator/micropython) contient une version
 Cette version represente le code qui pourrait tourner sur une carte ESP32, ESP8266 ou Raspberry Pi Pico W. Elle se connecte au WiFi, genere des mesures fictives, puis envoie un `POST /mesures` vers l'API `country`.
 
 Le simulateur Docker reste utile pour les tests locaux rapides, tandis que la version MicroPython montre la partie "objet connecte" attendue dans un contexte IoT.
+
+### Version materiel reel : NodeMCU ESP8266 + DHT11
+Le dossier [`iot/nodemcu-esp8266-dht11`](iot/nodemcu-esp8266-dht11) contient l'integration pour le vrai capteur DHT11 branche sur une carte NodeMCU ESP8266.
+
+Cette version lit la temperature et l'humidite du capteur, puis envoie les mesures vers l'API `country` avec `POST /mesures`. Une version MicroPython et une version Arduino IDE sont fournies.
+
+### Version materiel reel : ESP32 + DHT11
+Le dossier [`iot/esp32-dht11`](iot/esp32-dht11) contient l'integration adaptee au materiel reel utilise maintenant : une carte ESP32 avec un capteur DHT11.
+
+Branchement utilise :
+
+- DHT11 `VCC / +` vers ESP32 `3V3`
+- DHT11 `GND / -` vers ESP32 `GND`
+- DHT11 `OUT / DATA` vers ESP32 `GPIO32`
+
+Le sketch Arduino principal est [`iot/esp32-dht11/arduino/ESP32_DHT11_SerialBridge/ESP32_DHT11_SerialBridge.ino`](iot/esp32-dht11/arduino/ESP32_DHT11_SerialBridge/ESP32_DHT11_SerialBridge.ino). Il lit le capteur et affiche les mesures en JSON sur le port USB serie.
+
+Pour envoyer les mesures au backend :
+
+```powershell
+python iot/esp32-dht11/pc-serial-bridge/serial_bridge.py --port COM5 --api-url http://localhost:3000/mesures
+```
