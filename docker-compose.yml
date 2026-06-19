@@ -97,6 +97,33 @@ services:
     depends_on:
       - api_central
 
+  mqtt_broker:
+    image: eclipse-mosquitto:2
+    container_name: mqtt_broker
+    restart: always
+    profiles:
+      - dev
+    ports:
+      - "${MQTT_PORT:-1883}:1883"
+    volumes:
+      - ./iot/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  mqtt_bridge:
+    build: ./iot/mqtt-bridge
+    container_name: mqtt_bridge
+    restart: always
+    profiles:
+      - dev
+    depends_on:
+      - mqtt_broker
+      - api_brazil
+    environment:
+      MQTT_HOST: ${MQTT_HOST:-mqtt_broker}
+      MQTT_PORT: ${MQTT_INTERNAL_PORT:-1883}
+      MQTT_TOPIC: ${MQTT_TOPIC:-futurekawa/mesures}
+      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID:-futurekawa-mqtt-bridge}
+      API_URL: ${MQTT_BRIDGE_API_URL:-http://api_brazil:3000/mesures}
+
   iot_simulator:
     build: ./simulator
     container_name: iot_simulator

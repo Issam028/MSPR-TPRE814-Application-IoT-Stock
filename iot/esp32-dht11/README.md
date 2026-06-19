@@ -1,10 +1,12 @@
 # ESP32 + DHT11 real sensor
 
-This folder is for the real hardware:
+This folder is for the real hardware and follows the IoT course direction:
 
-- Board: ESP32
+- IDE: Thonny
+- Firmware: MicroPython on ESP32
 - Sensor: DHT11 temperature and humidity
-- API target: `POST http://localhost:3000/mesures`
+- Protocol: MQTT through Mosquitto
+- Backend save: MQTT bridge posts to `POST /mesures`
 
 ## Wiring
 
@@ -20,112 +22,111 @@ In MicroPython this is:
 DHT_PIN = 32
 ```
 
-## Recommended test: MicroPython USB serial bridge
+## Recommended path: Thonny + MicroPython + MQTT
 
-Use this first. It works even if the ESP32 cannot connect directly to school WiFi.
+This is the version closest to the teacher examples: `network`, `umqtt.simple`, `dht`, `Pin(32)`.
 
-The MicroPython file is:
+MicroPython files:
 
 ```text
-iot/esp32-dht11/micropython/main.py
+iot/esp32-dht11/micropython/main_mqtt.py
+iot/esp32-dht11/micropython/config.example.py
 ```
 
-It reads the DHT11 on GPIO32 and prints one JSON line every 10 seconds.
-
-### Install MicroPython on the ESP32
-
-You still need Windows to show a COM port for the ESP32. If Arduino IDE shows a blank port list, MicroPython tools will also fail until the USB cable or driver is fixed.
-
-Install tools:
+### 1. Start the project MQTT services
 
 ```powershell
-python -m pip install esptool mpremote
+docker compose --profile dev up --build -d mqtt_broker mqtt_bridge api_brazil api_central app_central
 ```
 
-Erase the ESP32:
+Optional: stop the fake simulator so only ESP32 data arrives:
 
 ```powershell
-python -m esptool --chip esp32 --port COM5 erase_flash
+docker compose stop iot_simulator
 ```
 
-Flash MicroPython firmware:
+Watch the MQTT bridge:
 
 ```powershell
-python -m esptool --chip esp32 --port COM5 --baud 460800 write_flash -z 0x1000 ESP32_GENERIC-<version>.bin
+docker logs -f mqtt_bridge
 ```
 
-Download the `ESP32_GENERIC` `.bin` firmware from the official MicroPython ESP32 download page, put it in the project folder, then use its real filename in the command above.
+### 2. Find your PC IP address
 
-### Copy the project code to the ESP32
-
-After MicroPython is installed:
+The ESP32 cannot use `localhost`. It must use your PC IPv4 address on the same WiFi or hotspot.
 
 ```powershell
-python -m mpremote connect COM5 fs cp iot/esp32-dht11/micropython/main.py :main.py
+ipconfig
 ```
 
-Then reset the ESP32:
+Use the IPv4 address in `MQTT_BROKER`.
 
-```powershell
-python -m mpremote connect COM5 reset
-```
-
-Watch the ESP32 output:
-
-```powershell
-python -m mpremote connect COM5
-```
-
-You should see lines like:
-
-```json
-{"id_entrepot":1,"temperature":26.0,"humidite":55.0}
-```
-
-### Send MicroPython readings to the project
-
-Close `mpremote` first with `Ctrl+]`. Only one program can use `COM5` at a time.
-
-Start the project:
-
-```powershell
-docker compose --profile dev up --build -d
-```
-
-Forward the ESP32 readings to the API:
-
-```powershell
-python iot/esp32-dht11/pc-serial-bridge/serial_bridge.py --port COM5 --api-url http://localhost:3000/mesures
-```
-
-## MicroPython direct WiFi version
-
-Only use this if the ESP32 is connected to a simple WiFi network or phone hotspot.
-
-Copy the example config:
+### 3. Prepare the config file
 
 ```powershell
 Copy-Item iot/esp32-dht11/micropython/config.example.py iot/esp32-dht11/micropython/config.py
 ```
 
-Edit `config.py`, then copy the files:
+Edit `config.py`:
+
+```python
+WIFI_SSID = "YOUR_WIFI_OR_HOTSPOT"
+WIFI_PASSWORD = "YOUR_PASSWORD"
+MQTT_BROKER = "YOUR_PC_IPV4"
+MQTT_PORT = 1883
+MQTT_TOPIC = "futurekawa/mesures"
+ENTREPOT_ID = 1
+DHT_PIN = 32
+```
+
+If school WiFi blocks devices, use a phone hotspot or Windows hotspot.
+
+### 4. Use Thonny
+
+1. Open Thonny.
+2. Tools > Options > Interpreter.
+3. Select MicroPython ESP32.
+4. Select the ESP32 port, usually `COM6`.
+5. If needed: Install or update MicroPython.
+6. Open `config.py`, save it to the device as `config.py`.
+7. Open `main_mqtt.py`, save it to the device as `main.py`.
+8. Press the ESP32 `EN` or `RST` button.
+
+Expected Thonny console:
+
+```text
+FutureKawa ESP32 + DHT11 MicroPython MQTT
+WiFi connected: ...
+MQTT connected: ... 1883
+published: {"id_entrepot":1,"temperature":26,"humidite":55}
+```
+
+Expected Docker log:
+
+```text
+mqtt: futurekawa/mesures {"id_entrepot":1,"temperature":26,"humidite":55}
+posted: 201 ...
+```
+
+### 5. Check database/API
 
 ```powershell
-python -m mpremote connect COM5 fs cp iot/esp32-dht11/micropython/config.py :config.py
-python -m mpremote connect COM5 fs cp iot/esp32-dht11/micropython/main_wifi.py :main.py
-python -m mpremote connect COM5 reset
+Invoke-RestMethod -Uri "http://localhost:3000/mesures/entrepot/1/latest"
 ```
 
-`API_URL` must use your PC IP address, not `localhost`, because the ESP32 has its own network connection. The school WiFi may not work if it uses enterprise authentication, so the USB serial bridge is usually easier.
+## Alternative: USB serial bridge
 
-## What the script does
+Use this only if WiFi/MQTT is blocked. It reads DHT11 and prints JSON over USB, then the PC forwards it to the API.
 
-- Reads temperature from the DHT11.
-- Reads humidity from the DHT11.
-- Sends or prints this JSON shape:
-
-```json
-{"id_entrepot":1,"temperature":26.0,"humidite":55.0}
+```powershell
+python iot/esp32-dht11/pc-serial-bridge/serial_bridge.py --port COM6 --api-url http://localhost:3000/mesures
 ```
 
-The backend stores the measure and marks it `conforme` or `en alerte` using the existing project thresholds.
+## Alternative: Arduino IDE
+
+The Arduino sketches still exist, but for the MSPR grid and the teacher's IoT lesson, the MicroPython + MQTT version is the one to present first.
+
+```text
+iot/esp32-dht11/arduino/ESP32_DHT11_SerialBridge/ESP32_DHT11_SerialBridge.ino
+iot/esp32-dht11/arduino/ESP32_DHT11_FutureKawa/ESP32_DHT11_FutureKawa.ino
+```

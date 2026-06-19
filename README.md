@@ -95,3 +95,21 @@ Pour envoyer les mesures au backend :
 ```powershell
 python iot/esp32-dht11/pc-serial-bridge/serial_bridge.py --port COM5 --api-url http://localhost:3000/mesures
 ```
+
+### Version IoT recommandee : ESP32 + DHT11 + MicroPython + MQTT
+Le dossier [`iot/esp32-dht11`](iot/esp32-dht11) contient maintenant la version alignee avec le cours IoT : Thonny, MicroPython, WiFi et MQTT.
+
+Flux utilise :
+
+```text
+ESP32 + DHT11 -> WiFi -> Mosquitto MQTT -> mqtt_bridge -> API country -> MySQL -> interface web
+```
+
+Commandes principales :
+
+```powershell
+docker compose --profile dev up --build -d mqtt_broker mqtt_bridge api_brazil api_central app_central
+docker logs -f mqtt_bridge
+```
+
+Le script ESP32 a utiliser dans Thonny est [`iot/esp32-dht11/micropython/main_mqtt.py`](iot/esp32-dht11/micropython/main_mqtt.py), a enregistrer sur la carte sous le nom `main.py`.
