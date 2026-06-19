@@ -14,86 +14,115 @@ This folder is for the real hardware:
 | GND / - | GND |
 | OUT / DATA | GPIO32 |
 
-In the code this is:
+In MicroPython this is:
 
-```cpp
-const int DHT_PIN = 32;
+```python
+DHT_PIN = 32
 ```
 
-## Arduino IDE setup
-
-1. Open Arduino IDE.
-2. Install the ESP32 board package:
-   - File > Preferences
-   - Additional Boards Manager URLs:
-     `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
-   - Tools > Board > Boards Manager
-   - Search `esp32`
-   - Install `esp32 by Espressif Systems`
-3. Select the board:
-   - Tools > Board > ESP32 Arduino > ESP32 Dev Module
-4. Select the port:
-   - Tools > Port > `COM5` or the port shown by Windows
-5. Install libraries:
-   - Sketch > Include Library > Manage Libraries
-   - Install `DHT sensor library` by Adafruit
-   - Install `Adafruit Unified Sensor`
-
-## Recommended test: USB serial bridge
+## Recommended test: MicroPython USB serial bridge
 
 Use this first. It works even if the ESP32 cannot connect directly to school WiFi.
 
-1. Open this sketch in Arduino IDE:
+The MicroPython file is:
 
 ```text
-iot/esp32-dht11/arduino/ESP32_DHT11_SerialBridge/ESP32_DHT11_SerialBridge.ino
+iot/esp32-dht11/micropython/main.py
 ```
 
-2. Upload it to the ESP32.
-3. Open Serial Monitor at `115200` baud. You should see lines like:
+It reads the DHT11 on GPIO32 and prints one JSON line every 10 seconds.
+
+### Install MicroPython on the ESP32
+
+You still need Windows to show a COM port for the ESP32. If Arduino IDE shows a blank port list, MicroPython tools will also fail until the USB cable or driver is fixed.
+
+Install tools:
+
+```powershell
+python -m pip install esptool mpremote
+```
+
+Erase the ESP32:
+
+```powershell
+python -m esptool --chip esp32 --port COM5 erase_flash
+```
+
+Flash MicroPython firmware:
+
+```powershell
+python -m esptool --chip esp32 --port COM5 --baud 460800 write_flash -z 0x1000 ESP32_GENERIC-<version>.bin
+```
+
+Download the `ESP32_GENERIC` `.bin` firmware from the official MicroPython ESP32 download page, put it in the project folder, then use its real filename in the command above.
+
+### Copy the project code to the ESP32
+
+After MicroPython is installed:
+
+```powershell
+python -m mpremote connect COM5 fs cp iot/esp32-dht11/micropython/main.py :main.py
+```
+
+Then reset the ESP32:
+
+```powershell
+python -m mpremote connect COM5 reset
+```
+
+Watch the ESP32 output:
+
+```powershell
+python -m mpremote connect COM5
+```
+
+You should see lines like:
 
 ```json
 {"id_entrepot":1,"temperature":26.0,"humidite":55.0}
 ```
 
-4. Close Serial Monitor. Only one program can use `COM5` at a time.
-5. Start the project:
+### Send MicroPython readings to the project
+
+Close `mpremote` first with `Ctrl+]`. Only one program can use `COM5` at a time.
+
+Start the project:
 
 ```powershell
 docker compose --profile dev up --build -d
 ```
 
-6. Forward the ESP32 readings to the API:
+Forward the ESP32 readings to the API:
 
 ```powershell
 python iot/esp32-dht11/pc-serial-bridge/serial_bridge.py --port COM5 --api-url http://localhost:3000/mesures
 ```
 
-## Direct WiFi version
+## MicroPython direct WiFi version
 
 Only use this if the ESP32 is connected to a simple WiFi network or phone hotspot.
 
-Open:
+Copy the example config:
 
-```text
-iot/esp32-dht11/arduino/ESP32_DHT11_FutureKawa/ESP32_DHT11_FutureKawa.ino
+```powershell
+Copy-Item iot/esp32-dht11/micropython/config.example.py iot/esp32-dht11/micropython/config.py
 ```
 
-Then change:
+Edit `config.py`, then copy the files:
 
-```cpp
-const char* WIFI_SSID = "CHANGE_ME";
-const char* WIFI_PASSWORD = "CHANGE_ME";
-const char* API_URL = "http://10.60.65.243:3000/mesures";
+```powershell
+python -m mpremote connect COM5 fs cp iot/esp32-dht11/micropython/config.py :config.py
+python -m mpremote connect COM5 fs cp iot/esp32-dht11/micropython/main_wifi.py :main.py
+python -m mpremote connect COM5 reset
 ```
 
-`API_URL` must use your PC IP address, not `localhost`, because the ESP32 has its own network connection.
+`API_URL` must use your PC IP address, not `localhost`, because the ESP32 has its own network connection. The school WiFi may not work if it uses enterprise authentication, so the USB serial bridge is usually easier.
 
-## What the sketch does
+## What the script does
 
 - Reads temperature from the DHT11.
 - Reads humidity from the DHT11.
-- Sends this JSON shape to the project:
+- Sends or prints this JSON shape:
 
 ```json
 {"id_entrepot":1,"temperature":26.0,"humidite":55.0}

@@ -88,7 +88,7 @@ Branchement utilise :
 - DHT11 `GND / -` vers ESP32 `GND`
 - DHT11 `OUT / DATA` vers ESP32 `GPIO32`
 
-Le sketch Arduino principal est [`iot/esp32-dht11/arduino/ESP32_DHT11_SerialBridge/ESP32_DHT11_SerialBridge.ino`](iot/esp32-dht11/arduino/ESP32_DHT11_SerialBridge/ESP32_DHT11_SerialBridge.ino). Il lit le capteur et affiche les mesures en JSON sur le port USB serie.
+Le fichier MicroPython principal est [`iot/esp32-dht11/micropython/main.py`](iot/esp32-dht11/micropython/main.py). Il lit le capteur et affiche les mesures en JSON sur le port USB serie.
 
 Pour envoyer les mesures au backend :
 
