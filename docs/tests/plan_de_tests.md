@@ -11,6 +11,8 @@ Valider que la solution permet de suivre les stocks et les conditions de stockag
 - Port web disponible : `8080`
 - Port API Brazil disponible : `3000`
 - Port API central disponible : `3001`
+- Port API Colombia disponible : `3002`
+- Port API Ecuador disponible : `3003`
 - Port MQTT disponible : `1883`
 
 ## Donnees de test
@@ -36,6 +38,8 @@ docker compose --profile dev ps
 Resultat attendu :
 
 - `api_brazil` est `Up`
+- `api_colombia` est `Up`
+- `api_ecuador` est `Up`
 - `api_central` est `Up`
 - `app_central` est `Up`
 - `mqtt_broker` est `Up`
@@ -177,6 +181,23 @@ Resultat attendu :
 
 - Les builds API et frontend passent.
 - Le fichier `Jenkinsfile` reprend ces memes controles dans Jenkins.
+
+## T08 - Test pays distribues
+
+Objectif : verifier que le siege expose les trois pays demandes.
+
+Commandes :
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3001/brazil/exploitations"
+Invoke-RestMethod -Uri "http://localhost:3001/colombia/exploitations"
+Invoke-RestMethod -Uri "http://localhost:3001/ecuador/exploitations"
+```
+
+Resultat attendu :
+
+- Les trois endpoints repondent via l'API centrale.
+- Les conteneurs `api_brazil`, `api_colombia` et `api_ecuador` sont actifs.
 
 ## Gestion des anomalies
 

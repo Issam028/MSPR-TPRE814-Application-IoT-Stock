@@ -1,0 +1,5 @@
+﻿Connecting MQTT: mqtt_broker 1883
+MQTT connected: Success
+Subscribed to: futurekawa/mesures
+mqtt: futurekawa/mesures {id_entrepot:1,temperature:26.5,humidite:55}
+posted: 201 {"id_entrepot":1,"temperature":26.5,"humidite":55,"statut":"conforme","id_mesure":26112,"timestamp":"2026-06-30T21:36:42.000Z"}

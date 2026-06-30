@@ -14,6 +14,7 @@ interface Lot {
 const COUNTRY_SLUGS: Record<string, string> = {
   'Brésil': 'brazil',
   'Colombie': 'colombia',
+  'Équateur': 'ecuador',
 }
 
 export function LotSearchCard({ className }: { className?: string }) {

@@ -1,0 +1,40 @@
+﻿[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [InstanceLoader] MesuresModule dependencies initialized +0ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RoutesResolver] MesuresController {/mesures}: +0ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RouterExplorer] Mapped {/mesures, GET} route +1ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RouterExplorer] Mapped {/mesures/entrepot/:id/latest, GET} route +1ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RouterExplorer] Mapped {/mesures/entrepot/:id, GET} route +0ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RouterExplorer] Mapped {/mesures/alerts, GET} route +0ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RouterExplorer] Mapped {/mesures/:id, GET} route +1ms
+[Nest] 17  - 06/30/2026, 7:35:18 PM     LOG [RouterExplorer] Mapped {/mesures, POST} route +0ms
+[Nest] 17  - 06/30/2026, 7:35:24 PM    WARN [AlertNotificationService] EMAIL ALERT LOG
+Subject: [FutureKawa] Alerte entrepot 1
+Une mesure est en alerte pour l'entrepot 1.
+Mesure: 26095
+Temperature: 33.13 C
+Humidite: 80.79 %
+Statut: en alerte
+Seuils attendus: temperature 24-30 C, humidite 50-60 %.
+[Nest] 17  - 06/30/2026, 7:35:55 PM    WARN [AlertNotificationService] EMAIL ALERT LOG
+Subject: [FutureKawa] Alerte entrepot 1
+Une mesure est en alerte pour l'entrepot 1.
+Mesure: 26101
+Temperature: 35.78 C
+Humidite: 84.35 %
+Statut: en alerte
+Seuils attendus: temperature 24-30 C, humidite 50-60 %.
+[Nest] 17  - 06/30/2026, 7:36:41 PM    WARN [AlertNotificationService] EMAIL ALERT LOG
+Subject: [FutureKawa] Alerte entrepot 1
+Une mesure est en alerte pour l'entrepot 1.
+Mesure: 26111
+Temperature: 34 C
+Humidite: 84 %
+Statut: en alerte
+Seuils attendus: temperature 24-30 C, humidite 50-60 %.
+[Nest] 17  - 06/30/2026, 7:36:51 PM    WARN [AlertNotificationService] EMAIL ALERT LOG
+Subject: [FutureKawa] Alerte entrepot 1
+Une mesure est en alerte pour l'entrepot 1.
+Mesure: 26114
+Temperature: 33.56 C
+Humidite: 85.36 %
+Statut: en alerte
+Seuils attendus: temperature 24-30 C, humidite 50-60 %.

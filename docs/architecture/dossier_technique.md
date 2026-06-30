@@ -24,8 +24,10 @@ app_central: interface web React
 api_central: API siege, agrege les APIs pays
 api_brazil: API pays Brazil
 api_colombia: API pays Colombia
+api_ecuador: API pays Ecuador
 mysql_Brazil: base SQL Brazil
 mysql_Colombia: base SQL Colombia
+mysql_Ecuador: base SQL Ecuador
 mqtt_broker: broker Mosquitto local
 mqtt_bridge: abonne MQTT qui persiste les mesures dans l'API pays
 iot_simulator: simulateur de mesures pour tests rapides
@@ -93,8 +95,8 @@ Les lots trop anciens peuvent aussi etre marques `perime` selon la date de stock
 
 ## Limites actuelles
 
-- La version complete est implementee pour Brazil et Colombia. Ecuador reste a ajouter ou a justifier comme hors perimetre de demonstration.
-- L'envoi email reel des alertes est a finaliser ou a presenter comme amelioration.
+- Les trois pays demandes sont exposes dans Docker Compose : Brazil, Colombia et Ecuador.
+- L'envoi email reel des alertes depend d'un serveur SMTP externe ; le mode `log` permet de valider le contenu sans identifiants.
 - La preuve du test ESP32 reel repose sur le scenario de seance et sur le scenario MQTT reproductible sans materiel.
 
 ## Commandes principales

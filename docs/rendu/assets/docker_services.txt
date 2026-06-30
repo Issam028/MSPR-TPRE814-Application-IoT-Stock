@@ -1,0 +1,12 @@
+﻿NAME             SERVICE         STATUS                        PORTS
+api_brazil       api_brazil      Up About a minute             0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+api_central      api_central     Up About a minute             0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp
+api_colombia     api_colombia    Up About a minute             0.0.0.0:3002->3000/tcp, [::]:3002->3000/tcp
+api_ecuador      api_ecuador     Up About a minute             0.0.0.0:3003->3000/tcp, [::]:3003->3000/tcp
+app_central      app_central     Up About a minute             0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+iot_simulator    iot_simulator   Up About a minute             5678/tcp
+mqtt_bridge      mqtt_bridge     Up About a minute             
+mqtt_broker      mqtt_broker     Up 17 minutes                 0.0.0.0:1883->1883/tcp, [::]:1883->1883/tcp
+mysql_Brazil     db_Brazil       Up 17 minutes (healthy)       0.0.0.0:3307->3306/tcp, [::]:3307->3306/tcp
+mysql_Colombia   db_Colombia     Up 17 minutes (healthy)       0.0.0.0:3308->3306/tcp, [::]:3308->3306/tcp
+mysql_Ecuador    db_Ecuador      Up About a minute (healthy)   0.0.0.0:3309->3306/tcp, [::]:3309->3306/tcp

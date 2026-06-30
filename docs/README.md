@@ -19,8 +19,8 @@ ESP32 + DHT11
   -> WiFi
   -> Mosquitto MQTT broker
   -> mqtt_bridge
-  -> country API
-  -> MySQL
+  -> country API (Brazil, Colombia, Ecuador)
+  -> MySQL by country
   -> central API
   -> React web interface
 ```

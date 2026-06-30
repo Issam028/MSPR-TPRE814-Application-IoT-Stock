@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 const COUNTRY_URLS: Record<string, string> = {
   brazil: process.env.BRAZIL_API_URL || 'http://api_brazil:3000',
   colombia: process.env.COLOMBIA_API_URL || 'http://api_colombia:3000',
+  ecuador: process.env.ECUADOR_API_URL || 'http://api_ecuador:3000',
 };
 
 @Injectable()

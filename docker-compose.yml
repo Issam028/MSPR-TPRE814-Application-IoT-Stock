@@ -40,6 +40,25 @@ services:
       retries: 5
       start_period: 30s
 
+  db_Ecuador:
+    image: mysql:8.4
+    container_name: mysql_Ecuador
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${ECUADOR_DATABASE:-ecuador_db}
+    ports:
+      - "${ECUADOR_MYSQL_PORT:-3309}:3306"
+    volumes:
+      - ./country/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_ecuador_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   api_brazil:
     build: ./country/api
     container_name: api_brazil
@@ -90,6 +109,31 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
 
+  api_ecuador:
+    build: ./country/api
+    container_name: api_ecuador
+    restart: always
+    ports:
+      - "${ECUADOR_API_PORT:-3003}:3000"
+    depends_on:
+      db_Ecuador:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DB_HOST: ${ECUADOR_DB_HOST:-db_Ecuador}
+      DB_PORT: ${ECUADOR_DB_PORT:-3306}
+      DB_USER: ${ECUADOR_DB_USER:-root}
+      DB_PASS: ${ECUADOR_DB_PASS:-root}
+      DB_NAME: ${ECUADOR_DB_NAME:-ecuador_db}
+      ALERT_EMAIL_MODE: ${ALERT_EMAIL_MODE:-log}
+      ALERT_EMAIL_TO: ${ALERT_EMAIL_TO:-responsable-ecuador@example.com}
+      ALERT_EMAIL_FROM: ${ALERT_EMAIL_FROM:-futurekawa-alerts@example.com}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+
   api_central:
     build: ./central/api
     container_name: api_central
@@ -99,10 +143,12 @@ services:
     depends_on:
       - api_brazil
       - api_colombia
+      - api_ecuador
     environment:
       PORT: 3001
       BRAZIL_API_URL: ${BRAZIL_API_URL:-http://api_brazil:3000}
       COLOMBIA_API_URL: ${COLOMBIA_API_URL:-http://api_colombia:3000}
+      ECUADOR_API_URL: ${ECUADOR_API_URL:-http://api_ecuador:3000}
 
   app_central:
     build: ./central/app
@@ -157,3 +203,4 @@ services:
 volumes:
   mysql_data:
   mysql_colombia_data:
+  mysql_ecuador_data:
