@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Lot } from './lot.entity';
 import { CreateLotDto } from './dto/create-lot.dto';
 import { UpdateLotDto } from './dto/update-lot.dto';
+import { AlertNotificationService } from '../alerts/alert-notification.service';
 
 const EXPIRED_AFTER_DAYS = 365;
 const ALERT_FROM_DAYS = 330;
@@ -13,6 +14,7 @@ export class LotsService {
   constructor(
     @InjectRepository(Lot)
     private readonly lotsRepository: Repository<Lot>,
+    private readonly alertNotificationService: AlertNotificationService,
   ) {}
 
   private evaluateStatus(dateStockage?: Date | string): string {
@@ -44,6 +46,15 @@ export class LotsService {
     if (lot.statut !== statut) {
       lot.statut = statut;
       await this.lotsRepository.save(lot);
+
+      if (statut !== 'conforme') {
+        await this.alertNotificationService.notifyLotAlert({
+          idLot: lot.id_lot,
+          idEntrepot: lot.id_entrepot,
+          statut,
+          dateStockage: lot.date_stockage,
+        });
+      }
     }
 
     return lot;
@@ -70,16 +81,28 @@ export class LotsService {
     return lots.filter((lot) => lot.statut === 'périmé');
   }
 
-  create(dto: CreateLotDto): Promise<Lot> {
+  async create(dto: CreateLotDto): Promise<Lot> {
     const lot = this.lotsRepository.create({
       ...dto,
       statut: this.evaluateStatus(dto.date_stockage),
     });
-    return this.lotsRepository.save(lot);
+    const savedLot = await this.lotsRepository.save(lot);
+
+    if (savedLot.statut !== 'conforme') {
+      await this.alertNotificationService.notifyLotAlert({
+        idLot: savedLot.id_lot,
+        idEntrepot: savedLot.id_entrepot,
+        statut: savedLot.statut,
+        dateStockage: savedLot.date_stockage,
+      });
+    }
+
+    return savedLot;
   }
 
   async update(id: number, dto: UpdateLotDto): Promise<Lot> {
     const existingLot = await this.findOne(id);
+    const previousStatus = existingLot.statut;
     const updatedLot = this.lotsRepository.create({
       ...existingLot,
       ...dto,
@@ -87,6 +110,16 @@ export class LotsService {
     });
 
     await this.lotsRepository.save(updatedLot);
+
+    if (updatedLot.statut !== 'conforme' && updatedLot.statut !== previousStatus) {
+      await this.alertNotificationService.notifyLotAlert({
+        idLot: updatedLot.id_lot,
+        idEntrepot: updatedLot.id_entrepot,
+        statut: updatedLot.statut,
+        dateStockage: updatedLot.date_stockage,
+      });
+    }
+
     return this.findOne(id);
   }
 

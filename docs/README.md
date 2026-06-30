@@ -10,6 +10,7 @@ This folder groups the documents used for the final MSPR submission.
 - `architecture/dossier_technique.md`: architecture and technical choices.
 - `cadrage/questionnaire_phase_2.md`: interview questionnaire for phase 2.
 - `changement/plan_conduite_changement.md`: change-management plan.
+- `alerts/email_alerts.md`: email/log alert mechanism.
 
 ## Main demo flow
 

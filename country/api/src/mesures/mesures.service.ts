@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Mesure } from './mesure.entity';
 import { CreateMesureDto } from './dto/create-mesure.dto';
+import { AlertNotificationService } from '../alerts/alert-notification.service';
 
 const TEMPERATURE_MIN = 24;
 const TEMPERATURE_MAX = 30;
@@ -14,6 +15,7 @@ export class MesuresService {
   constructor(
     @InjectRepository(Mesure)
     private readonly mesuresRepository: Repository<Mesure>,
+    private readonly alertNotificationService: AlertNotificationService,
   ) {}
 
   findAll(): Promise<Mesure[]> {
@@ -64,11 +66,23 @@ export class MesuresService {
     return temperatureOk && humiditeOk ? 'conforme' : 'en alerte';
   }
 
-  create(dto: CreateMesureDto): Promise<Mesure> {
+  async create(dto: CreateMesureDto): Promise<Mesure> {
     const mesure = this.mesuresRepository.create({
       ...dto,
       statut: this.evaluateStatus(dto),
     });
-    return this.mesuresRepository.save(mesure);
+    const savedMesure = await this.mesuresRepository.save(mesure);
+
+    if (savedMesure.statut === 'en alerte') {
+      await this.alertNotificationService.notifyMeasureAlert({
+        idMesure: savedMesure.id_mesure,
+        idEntrepot: savedMesure.id_entrepot,
+        temperature: savedMesure.temperature,
+        humidite: savedMesure.humidite,
+        statut: savedMesure.statut,
+      });
+    }
+
+    return savedMesure;
   }
 }

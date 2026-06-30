@@ -56,6 +56,14 @@ services:
       DB_USER: ${BRAZIL_DB_USER:-root}
       DB_PASS: ${BRAZIL_DB_PASS:-root}
       DB_NAME: ${BRAZIL_DB_NAME:-brazil_db}
+      ALERT_EMAIL_MODE: ${ALERT_EMAIL_MODE:-log}
+      ALERT_EMAIL_TO: ${ALERT_EMAIL_TO:-responsable-brazil@example.com}
+      ALERT_EMAIL_FROM: ${ALERT_EMAIL_FROM:-futurekawa-alerts@example.com}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
 
   api_colombia:
     build: ./country/api
@@ -73,6 +81,14 @@ services:
       DB_USER: ${COLOMBIA_DB_USER:-root}
       DB_PASS: ${COLOMBIA_DB_PASS:-root}
       DB_NAME: ${COLOMBIA_DB_NAME:-colombia_db}
+      ALERT_EMAIL_MODE: ${ALERT_EMAIL_MODE:-log}
+      ALERT_EMAIL_TO: ${ALERT_EMAIL_TO:-responsable-colombia@example.com}
+      ALERT_EMAIL_FROM: ${ALERT_EMAIL_FROM:-futurekawa-alerts@example.com}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
 
   api_central:
     build: ./central/api
