@@ -4,25 +4,7 @@ import { Repository } from 'typeorm';
 import { Mesure } from './mesure.entity';
 import { CreateMesureDto } from './dto/create-mesure.dto';
 import { AlertNotificationService } from '../alerts/alert-notification.service';
-
-const toFloat = (value: string | undefined, fallback: number): number => {
-  const parsed = Number.parseFloat(value ?? '');
-  return Number.isFinite(parsed) ? parsed : fallback;
-};
-
-const getThresholds = () => {
-  const temperatureTarget = toFloat(process.env.ALERT_TEMPERATURE_TARGET, 27);
-  const temperatureTolerance = toFloat(process.env.ALERT_TEMPERATURE_TOLERANCE, 3);
-  const humiditeTarget = toFloat(process.env.ALERT_HUMIDITE_TARGET, 55);
-  const humiditeTolerance = toFloat(process.env.ALERT_HUMIDITE_TOLERANCE, 5);
-
-  return {
-    temperatureMin: temperatureTarget - temperatureTolerance,
-    temperatureMax: temperatureTarget + temperatureTolerance,
-    humiditeMin: humiditeTarget - humiditeTolerance,
-    humiditeMax: humiditeTarget + humiditeTolerance,
-  };
-};
+import { evaluateMesureStatus, getThresholds } from './mesure-status';
 
 @Injectable()
 export class MesuresService {
@@ -66,19 +48,7 @@ export class MesuresService {
   }
 
   private evaluateStatus(dto: CreateMesureDto): string {
-    const thresholds = getThresholds();
-    const temperatureOk =
-      dto.temperature !== null &&
-      dto.temperature !== undefined &&
-      dto.temperature >= thresholds.temperatureMin &&
-      dto.temperature <= thresholds.temperatureMax;
-    const humiditeOk =
-      dto.humidite !== null &&
-      dto.humidite !== undefined &&
-      dto.humidite >= thresholds.humiditeMin &&
-      dto.humidite <= thresholds.humiditeMax;
-
-    return temperatureOk && humiditeOk ? 'conforme' : 'en alerte';
+    return evaluateMesureStatus(dto);
   }
 
   async create(dto: CreateMesureDto): Promise<Mesure> {

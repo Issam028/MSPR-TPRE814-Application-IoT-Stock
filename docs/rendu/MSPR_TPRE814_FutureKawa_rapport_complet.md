@@ -2,8 +2,7 @@
 
 **Bloc 4 - Concevoir et développer des solutions applicatives métier et spécifiques**  
 **Projet : Application IoT de supervision des stocks et des conditions de stockage**  
-**Équipe projet : Antoine GARNIER, Thibault AUTEXIER, Issam HARNOUFI, Zaid ABABOU, Ali WARI**  
-**Date : 1 juillet 2026**
+**Équipe projet : Thibault AUTEXIER, Issam HARNOUFI, Zaid ABABOU, Ali WARI**  
 
 ---
 
@@ -23,7 +22,7 @@
 12. Interface web React
 13. Gestion des alertes
 14. Gestion des lots et logique FIFO
-15. Tests manuels
+15. Tests et validation
 16. Intégration continue Jenkins
 17. Documentation utilisateur
 18. Conduite du changement
@@ -1039,12 +1038,19 @@ Ces évolutions dépassent le POC mais montrent la trajectoire produit.
 
 <div style="page-break-after: always;"></div>
 
-# 15. Tests manuels
+# 15. Tests et validation
 
 Le plan de tests se trouve dans :
 
 ```text
 docs/tests/plan_de_tests.md
+```
+
+La stratégie de tests automatisés et le suivi des anomalies sont documentés dans :
+
+```text
+docs/tests/strategie_tests_automatises.md
+docs/tests/anomalies_retests.md
 ```
 
 ## 15.1 Objectif des tests
@@ -1055,7 +1061,32 @@ Les tests doivent vérifier le chemin critique :
 Docker -> API -> MQTT -> base SQL -> API centrale -> frontend -> alertes
 ```
 
-## 15.2 T01 - Démarrage
+Ils couvrent aussi les règles métier critiques : calcul du statut mesure, seuils température/humidité, mapping ERP stock et mapping ERP qualité.
+
+## 15.2 Tests automatisés
+
+Commande :
+
+```powershell
+cd country/api
+npm test
+```
+
+Résultat obtenu :
+
+```text
+FutureKawa automated tests passed
+```
+
+Ces tests automatisés vérifient :
+
+- une mesure conforme ;
+- une mesure hors seuil ;
+- une mesure incomplète ;
+- la transformation d'un lot vers un payload ERP stock ;
+- la transformation d'une mesure en alerte vers un payload ERP qualité.
+
+## 15.3 T01 - Démarrage
 
 Commande :
 
@@ -1073,7 +1104,7 @@ Résultat attendu :
 - broker MQTT up ;
 - bridge up.
 
-## 15.3 T02 - Mesure conforme
+## 15.4 T02 - Mesure conforme
 
 Commande :
 
@@ -1087,7 +1118,7 @@ Résultat attendu :
 - statut conforme pour Brazil ;
 - mesure persistée.
 
-## 15.4 T03 - Mesure en alerte
+## 15.5 T03 - Mesure en alerte
 
 Commande :
 
@@ -1101,7 +1132,7 @@ Résultat attendu :
 - statut `en alerte` ;
 - notification log ou SMTP.
 
-## 15.5 T04 - MQTT
+## 15.6 T04 - MQTT
 
 Commande :
 
@@ -1116,7 +1147,7 @@ Résultat attendu :
 - POST API ;
 - HTTP 201.
 
-## 15.6 T05 - Interface web
+## 15.7 T05 - Interface web
 
 URL :
 
@@ -1135,7 +1166,7 @@ http://localhost:8080
 7. vérifier historique récent ;
 8. vérifier alertes.
 
-## 15.7 T06 - Multi-pays
+## 15.8 T06 - Multi-pays
 
 Commandes :
 
@@ -1160,6 +1191,7 @@ Le sujet demande une intégration continue avec un outil comme Jenkins. Le proje
 Le pipeline doit détecter rapidement :
 
 - une configuration Docker invalide ;
+- une règle métier qui régresse ;
 - une API qui ne build plus ;
 - un frontend qui ne build plus ;
 - un bridge qui ne se construit plus.
@@ -1170,17 +1202,20 @@ Le pipeline contient :
 
 1. checkout du dépôt ;
 2. validation Docker Compose ;
-3. build de l'API pays ;
-4. build de l'API centrale ;
-5. build du frontend ;
-6. build de l'image MQTT bridge.
+3. tests automatisés de l'API pays ;
+4. build de l'API pays ;
+5. build de l'API centrale ;
+6. contrôle TypeScript et build du frontend ;
+7. build de l'image MQTT bridge ;
+8. archivage des artefacts de build.
 
 ## 16.3 Commandes équivalentes localement
 
 ```powershell
-docker compose --profile dev config
+docker compose --profile dev config --quiet
 cd country/api
 npm ci
+npm test
 npm run build
 cd ../../central/api
 npm ci
@@ -1500,15 +1535,34 @@ Le projet ne couvre pas encore :
 
 ## 20.5 Justification concernant l'ERP
 
-La grille mentionne le développement dans un progiciel intégré. Le sujet FutureKawa, lui, demande surtout une solution applicative spécifique avec IoT, API, SQL, web, Docker et Jenkins. Le projet traite donc l'aspect "solution intégrée" par l'intégration applicative interne :
+La grille mentionne le développement dans un progiciel intégré. Le sujet FutureKawa demande surtout une solution applicative spécifique avec IoT, API, SQL, web, Docker et Jenkins. Pour renforcer ce point, le projet ajoute un module d'intégration ERP côté API pays :
 
-- APIs REST ;
-- centralisation siège ;
-- persistance SQL ;
-- préparation à l'intégration SI ;
-- architecture extensible.
+```text
+country/api/src/erp/
+```
 
-Une vraie intégration ERP serait une évolution naturelle, mais elle dépasse le POC demandé par les livrables détaillés.
+Ce module expose des endpoints dédiés :
+
+```text
+GET /erp/health
+GET /erp/stock-movements
+GET /erp/quality-alerts
+```
+
+Le rôle du module est de transformer les données FutureKawa vers des objets exploitables par un ERP :
+
+- lots vers module stock ;
+- mesures en alerte vers module qualité ;
+- identifiants externes par pays ;
+- statuts normalisés comme `AVAILABLE`, `WARNING`, `BLOCKED`, `NON_CONFORMITY`.
+
+La documentation détaillée se trouve dans :
+
+```text
+docs/erp/progiciel_integre.md
+```
+
+Le projet ne prétend pas remplacer un vrai déploiement SAP, Microsoft Dynamics ou Salesforce. En revanche, il démontre concrètement l'intégration applicative attendue : endpoints dédiés, mapping métier, séparation stock/qualité et préparation à l'échange avec un SI de gestion.
 
 <div style="page-break-after: always;"></div>
 
@@ -1532,7 +1586,10 @@ Une vraie intégration ERP serait une évolution naturelle, mais elle dépasse l
 | Dossier technique | Validé | `docs/architecture/dossier_technique.md` |
 | Plan de tests | Validé | `docs/tests/plan_de_tests.md` |
 | Jenkins | Validé | `Jenkinsfile` |
+| Tests automatisés | Validé | `country/api/test/run-tests.ts` |
 | Tests manuels | Validé | commandes documentées |
+| Anomalies et re-tests | Validé | `docs/tests/anomalies_retests.md` |
+| Module ERP | Validé | `country/api/src/erp` |
 | Repository Git | Validé | commits et branche poussée |
 | Documentation utilisateur | Validé | section utilisateur + docs |
 | Schéma phase 2 | Validé | section automatisation |
@@ -1544,6 +1601,9 @@ Une vraie intégration ERP serait une évolution naturelle, mais elle dépasse l
 - les trois pays sont désormais représentés ;
 - l'alerte SMTP réelle a été testée ;
 - le graphe a été corrigé pour être lisible ;
+- un module ERP stock/qualité est présent ;
+- des tests automatisés couvrent les règles métier critiques ;
+- le suivi anomalie/correction/re-test est formalisé ;
 - le rapport inclut des preuves visuelles ;
 - le projet est lançable par Docker Compose ;
 - Jenkins est prêt.
@@ -1555,8 +1615,8 @@ Certains éléments restent à considérer dans une version industrialisée :
 - renforcer l'authentification et la gestion des droits ;
 - ajouter une supervision centralisée des services ;
 - historiser plus finement les événements d'exploitation ;
-- automatiser davantage les tests ;
-- préparer l'intégration future avec un ERP ;
+- étendre les tests automatisés jusqu'à l'E2E navigateur ;
+- connecter le module ERP à un progiciel réel ;
 - documenter les procédures d'exploitation en production.
 
 <div style="page-break-after: always;"></div>
@@ -1616,17 +1676,17 @@ Certains éléments restent à considérer dans une version industrialisée :
 
 **Réponse projet :**
 
-Le projet n'est pas un module SAP ou Salesforce. En revanche, le sujet demande une solution applicative spécifique intégrée au SI FutureKawa. La réponse se situe dans l'intégration applicative :
+Le projet n'est pas un module SAP ou Salesforce complet. En revanche, il contient un module d'intégration ERP concret dans l'API pays :
 
-- API centrale ;
-- APIs pays ;
-- données SQL ;
-- flux MQTT ;
-- frontend siège ;
-- préparation à l'intégration ERP future.
+- routes `/erp/health`, `/erp/stock-movements`, `/erp/quality-alerts` ;
+- mapping des lots vers un module stock ;
+- mapping des mesures en alerte vers un module qualité ;
+- statuts normalisés pour un SI externe ;
+- documentation dédiée `docs/erp/progiciel_integre.md` ;
+- tests automatisés du mapping ERP.
 
-**Validation : critère partiellement couvert selon l'interprétation du périmètre.**  
-Le cahier des charges FutureKawa oriente principalement vers une solution spécifique IoT et applicative. L'intégration est donc traitée par les échanges entre APIs, bases SQL, MQTT, frontend et préparation à une connexion ERP future.
+**Validation : critère couvert au niveau POC.**  
+Le périmètre ne déploie pas un ERP réel, mais il matérialise l'intégration par un adaptateur applicatif exploitable par un progiciel.
 
 ## 22.5 Effectuer les tests
 
@@ -1639,6 +1699,9 @@ Le cahier des charges FutureKawa oriente principalement vers une solution spéci
 - tests MQTT ;
 - tests UI ;
 - tests Docker ;
+- tests automatisés métier ;
+- tests automatisés mapping ERP ;
+- suivi anomalie/correction/re-test ;
 - builds npm ;
 - preuve log ;
 - scénarios manuels.
@@ -1653,6 +1716,10 @@ Le cahier des charges FutureKawa oriente principalement vers une solution spéci
 
 - Jenkinsfile ;
 - stages ;
+- exécution `npm test` ;
+- contrôle Docker Compose sans affichage des secrets ;
+- builds API/frontend/bridge ;
+- archivage artefacts ;
 - documentation Jenkins ;
 - commandes locales équivalentes.
 

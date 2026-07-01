@@ -8,6 +8,7 @@ import { Lot } from './lots/lot.entity';
 import { Mesure } from './mesures/mesure.entity';
 import { Exploitation } from './exploitations/exploitation.entity';
 import { Entrepot } from './entrepots/entrepot.entity';
+import { ErpExportModule } from './erp/erp-export.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Entrepot } from './entrepots/entrepot.entity';
     MesuresModule,
     ExploitationsModule,
     EntrepotsModule,
+    ErpExportModule,
   ],
 })
 export class AppModule {}

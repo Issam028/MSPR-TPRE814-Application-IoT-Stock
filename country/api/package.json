@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "nest build",
+    "test": "ts-node --transpile-only -r tsconfig-paths/register test/run-tests.ts",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
     "seed": "ts-node src/seed.ts"

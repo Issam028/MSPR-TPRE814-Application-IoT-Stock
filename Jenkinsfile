@@ -15,7 +15,7 @@ pipeline {
 
     stage('Validate Docker Compose') {
       steps {
-        sh 'docker compose --profile dev config'
+        sh 'docker compose --profile dev config --quiet'
       }
     }
 
@@ -23,6 +23,7 @@ pipeline {
       steps {
         dir('country/api') {
           sh 'npm ci'
+          sh 'npm test'
           sh 'npm run build'
         }
       }
@@ -49,6 +50,12 @@ pipeline {
     stage('Build MQTT Bridge Image') {
       steps {
         sh 'docker compose --profile dev build mqtt_bridge'
+      }
+    }
+
+    stage('Archive Build Artifacts') {
+      steps {
+        archiveArtifacts artifacts: 'country/api/dist/**,central/api/dist/**,central/app/dist/**', allowEmptyArchive: true
       }
     }
   }
