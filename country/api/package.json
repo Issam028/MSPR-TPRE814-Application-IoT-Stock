@@ -4,7 +4,8 @@
   "description": "API NestJS pour la gestion des stocks de café - FutureKawa",
   "main": "dist/index.js",
   "scripts": {
-    "build": "nest build",
+    "clean": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('tsconfig.tsbuildinfo',{force:true});\"",
+    "build": "npm run clean && nest build",
     "test": "ts-node --transpile-only -r tsconfig-paths/register test/run-tests.ts",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",

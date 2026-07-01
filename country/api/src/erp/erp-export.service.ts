@@ -15,7 +15,10 @@ export class ErpExportService {
   ) {}
 
   async getStockMovements() {
-    const lots = await this.lotsRepository.find({ order: { date_stockage: 'DESC' } });
+    const lots = await this.lotsRepository.find({
+      order: { date_stockage: 'DESC' },
+      take: 100,
+    });
     return lots.map((lot) => mapLotToErpStockMovement(lot, process.env.COUNTRY_CODE || 'BR'));
   }
 
@@ -23,6 +26,7 @@ export class ErpExportService {
     const mesures = await this.mesuresRepository.find({
       where: { statut: 'en alerte' },
       order: { timestamp: 'DESC' },
+      take: 50,
     });
     return mesures.map((mesure) => mapMesureToErpQualityAlert(mesure, process.env.COUNTRY_CODE || 'BR'));
   }
