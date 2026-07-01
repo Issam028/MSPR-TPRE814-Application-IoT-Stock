@@ -7,20 +7,6 @@
 
 ---
 
-## Note de conversion PDF
-
-Ce document est rédigé en Markdown pour pouvoir être converti en PDF avec un outil comme VS Code Markdown PDF, Pandoc, Typora ou Obsidian. Les captures sont référencées avec des chemins relatifs depuis ce dossier `docs/rendu`.
-
-Pour une conversion propre, garder les images dans `docs/rendu/assets/` et convertir ce fichier depuis le dossier racine du projet ou depuis `docs/rendu`.
-
-Les séparateurs suivants peuvent être interprétés comme des sauts de page par certains outils :
-
-```html
-<div style="page-break-after: always;"></div>
-```
-
----
-
 ## Table des matières
 
 1. Synthèse exécutive
@@ -45,8 +31,7 @@ Les séparateurs suivants peuvent être interprétés comme des sauts de page pa
 20. Sécurité, robustesse et limites
 21. Validation détaillée du sujet
 22. Validation détaillée de la grille
-23. Guide de démonstration orale
-24. Annexes techniques
+23. Annexes techniques
 
 <div style="page-break-after: always;"></div>
 
@@ -75,7 +60,7 @@ La solution a été pensée pour être lisible en soutenance : les flux sont sim
 
 ## 1.1 Objectif du rapport
 
-Le présent rapport a pour objectif de remplacer une simple synthèse courte par un dossier complet. Il doit permettre au jury de comprendre :
+Le présent rapport présente l'ensemble de la solution FutureKawa, depuis l'analyse du besoin jusqu'à la validation technique. Il décrit :
 
 - le contexte métier ;
 - les besoins fonctionnels ;
@@ -86,7 +71,7 @@ Le présent rapport a pour objectif de remplacer une simple synthèse courte par
 - les tests réalisés ;
 - la conformité au sujet ;
 - la conformité à la grille d'évaluation ;
-- la préparation de la démonstration orale.
+- les limites et évolutions possibles.
 
 ## 1.2 Positionnement du projet
 
@@ -353,7 +338,7 @@ Docker Compose est adapté au contexte MSPR parce qu'il rend la démonstration r
 docker compose --profile dev up --build -d
 ```
 
-Ce choix facilite aussi l'évaluation par le jury :
+Ce choix facilite aussi l'évaluation du projet :
 
 - les ports sont explicites ;
 - les services sont nommés ;
@@ -1563,19 +1548,16 @@ Une vraie intégration ERP serait une évolution naturelle, mais elle dépasse l
 - le projet est lançable par Docker Compose ;
 - Jenkins est prêt.
 
-## 21.2 Points à préparer à l'oral
+## 21.2 Points de vigilance
 
-Le jury peut demander :
+Certains éléments restent à considérer dans une version industrialisée :
 
-- pourquoi MQTT ;
-- pourquoi MicroPython ;
-- comment l'alerte est déclenchée ;
-- comment l'e-mail est envoyé ;
-- comment ajouter un pays ;
-- comment vérifier que les données sont en base ;
-- comment tester sans ESP32 ;
-- comment Jenkins valide le projet ;
-- quelles sont les limites pour la production.
+- renforcer l'authentification et la gestion des droits ;
+- ajouter une supervision centralisée des services ;
+- historiser plus finement les événements d'exploitation ;
+- automatiser davantage les tests ;
+- préparer l'intégration future avec un ERP ;
+- documenter les procédures d'exploitation en production.
 
 <div style="page-break-after: always;"></div>
 
@@ -1593,7 +1575,7 @@ Le jury peut demander :
 - formalisation des contraintes ;
 - documentation du besoin.
 
-**Niveau visé : 3.**
+**Validation : critère couvert.**
 
 ## 22.2 Concevoir une architecture applicative
 
@@ -1610,7 +1592,7 @@ Le jury peut demander :
 - schéma dans le rapport ;
 - justification des choix.
 
-**Niveau visé : 3.**
+**Validation : critère couvert.**
 
 ## 22.3 Développer une application adaptée
 
@@ -1626,7 +1608,7 @@ Le jury peut demander :
 - MySQL ;
 - démonstration possible par interface et commandes.
 
-**Niveau visé : 3.**
+**Validation : critère couvert.**
 
 ## 22.4 Développer une solution intégrée
 
@@ -1643,8 +1625,8 @@ Le projet n'est pas un module SAP ou Salesforce. En revanche, le sujet demande u
 - frontend siège ;
 - préparation à l'intégration ERP future.
 
-**Niveau visé : 2 à 3 selon interprétation jury.**  
-À l'oral, il faut expliquer que le cahier des charges FutureKawa oriente surtout vers une solution spécifique IoT plutôt qu'un progiciel.
+**Validation : critère partiellement couvert selon l'interprétation du périmètre.**  
+Le cahier des charges FutureKawa oriente principalement vers une solution spécifique IoT et applicative. L'intégration est donc traitée par les échanges entre APIs, bases SQL, MQTT, frontend et préparation à une connexion ERP future.
 
 ## 22.5 Effectuer les tests
 
@@ -1661,7 +1643,7 @@ Le projet n'est pas un module SAP ou Salesforce. En revanche, le sujet demande u
 - preuve log ;
 - scénarios manuels.
 
-**Niveau visé : 3.**
+**Validation : critère couvert.**
 
 ## 22.6 Appliquer l'intégration continue
 
@@ -1674,7 +1656,7 @@ Le projet n'est pas un module SAP ou Salesforce. En revanche, le sujet demande u
 - documentation Jenkins ;
 - commandes locales équivalentes.
 
-**Niveau visé : 3 si un build Jenkins est montré en capture.**
+**Validation : critère couvert avec les captures Jenkins intégrées au rapport.**
 
 ## 22.7 Rédiger la documentation utilisateur
 
@@ -1690,7 +1672,7 @@ Le projet n'est pas un module SAP ou Salesforce. En revanche, le sujet demande u
 - plan de tests ;
 - README.
 
-**Niveau visé : 3.**
+**Validation : critère couvert.**
 
 ## 22.8 Conduire le changement
 
@@ -1704,102 +1686,13 @@ Le projet n'est pas un module SAP ou Salesforce. En revanche, le sujet demande u
 - indicateurs ;
 - planning pilote.
 
-**Niveau visé : 3.**
+**Validation : critère couvert.**
 
 <div style="page-break-after: always;"></div>
 
-# 23. Guide de démonstration orale
+# 23. Annexes techniques
 
-## 23.1 Script de démonstration conseillé
-
-1. Présenter le contexte FutureKawa.
-2. Montrer l'architecture.
-3. Lancer Docker ou montrer les services.
-4. Ouvrir le dashboard.
-5. Sélectionner Brésil.
-6. Ouvrir Exploitations.
-7. Montrer le graphe lisible.
-8. Ouvrir Entrepôts.
-9. Montrer historique et alertes.
-10. Publier une mesure MQTT.
-11. Montrer le log `posted: 201`.
-12. Déclencher une alerte.
-13. Montrer l'e-mail ou le log.
-14. Montrer Jenkins.
-15. Conclure sur la grille.
-
-## 23.2 Commandes utiles
-
-Démarrage :
-
-```powershell
-docker compose --profile dev up --build -d
-```
-
-Services :
-
-```powershell
-docker compose ps
-```
-
-Mesure alerte :
-
-```powershell
-Invoke-RestMethod -Method Post -Uri "http://localhost:3000/mesures" -ContentType "application/json" -Body '{"id_entrepot":1,"temperature":34,"humidite":84}'
-```
-
-Logs alerte :
-
-```powershell
-docker logs --tail 50 api_brazil
-```
-
-MQTT :
-
-```powershell
-docker exec mqtt_broker mosquitto_pub -h localhost -p 1883 -t futurekawa/mesures -m "{id_entrepot:1,temperature:26.5,humidite:55}"
-docker logs --tail 30 mqtt_bridge
-```
-
-Jenkins local équivalent :
-
-```powershell
-docker compose --profile dev config
-cd country/api
-npm run build
-cd ../../central/api
-npm run build
-cd ../app
-npm run build
-```
-
-## 23.3 Questions probables du jury
-
-### Pourquoi MQTT ?
-
-MQTT est léger, adapté aux objets connectés et fonctionne en publish/subscribe. L'ESP32 publie sans connaître l'API. Le bridge s'abonne et persiste.
-
-### Pourquoi Docker ?
-
-Docker rend la démonstration reproductible et isole les services.
-
-### Comment ajouter un pays ?
-
-Ajouter une base, une API pays, une URL dans l'API centrale, puis l'entrée frontend si nécessaire. L'ajout d'Ecuador prouve ce mécanisme.
-
-### Comment fonctionne l'alerte ?
-
-L'API calcule le statut à la création d'une mesure. Si le statut est `en alerte`, elle appelle le service de notification. Celui-ci écrit dans les logs ou envoie par SMTP.
-
-### Que faire si l'ESP32 n'est pas disponible ?
-
-Utiliser le test `mosquitto_pub`, qui reproduit le même payload MQTT et valide tout le flux backend.
-
-<div style="page-break-after: always;"></div>
-
-# 24. Annexes techniques
-
-## 24.1 Arborescence importante
+## 23.1 Arborescence importante
 
 ```text
 central/
@@ -1828,7 +1721,7 @@ docker-compose.yml
 Jenkinsfile
 ```
 
-## 24.2 Fichiers clés
+## 23.2 Fichiers clés
 
 | Fichier | Rôle |
 | --- | --- |
@@ -1840,7 +1733,7 @@ Jenkinsfile
 | `iot/esp32-dht11/micropython/main_mqtt.py` | Code ESP32 |
 | `central/app/src/page/Exploitations/StatsCard/StatsCard.tsx` | Graphe lisible |
 
-## 24.3 Endpoints de démonstration
+## 23.3 Endpoints de démonstration
 
 ```text
 Frontend : http://localhost:8080
@@ -1851,32 +1744,11 @@ API Ecuador : http://localhost:3003
 MQTT : localhost:1883
 ```
 
-## 24.4 Commandes de seed Équateur
+## 23.4 Commandes de seed Équateur
 
 ```powershell
 docker compose exec -e SEED_TRUNCATE=true -e SEED_RANDOM_SEED=814 api_ecuador npm run seed
 ```
-
-## 24.5 Conversion en PDF
-
-Exemple Pandoc :
-
-```powershell
-pandoc docs/rendu/MSPR_TPRE814_FutureKawa_rapport_complet.md -o docs/rendu/MSPR_TPRE814_FutureKawa_rapport_complet.pdf --resource-path=docs/rendu
-```
-
-Selon l'outil utilisé, il peut être nécessaire d'ajuster la taille des images. Les sauts de page HTML sont déjà placés pour obtenir un rendu proche d'un rapport long.
-
-## 24.6 Captures intégrées
-
-Les captures suivantes sont maintenant intégrées directement dans les chapitres concernés :
-
-- matériel IoT : capteur DHT11 et carte de prototypage ;
-- Thonny : script MicroPython, connexion MQTT et publications JSON ;
-- alertes SMTP : boîte mail et détail d'un message reçu ;
-- Jenkins : job, pipeline vert et console de succès.
-
-Ces captures couvrent les preuves les plus importantes pour la soutenance : IoT réel, transmission MQTT, persistance applicative, alertes e-mail et intégration continue.
 
 ---
 
