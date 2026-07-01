@@ -301,13 +301,13 @@ Les captures suivantes sont intégrées dans ce rapport :
 
 ## 4.2 Remarque sur les preuves matérielles
 
-Le module ESP32 + DHT11 a été travaillé avec Thonny et MicroPython. Lorsque le matériel n'est pas disponible ou qu'une capture Thonny manque, le projet conserve un scénario reproductible MQTT sans ESP32. Ce scénario utilise `mosquitto_pub` pour envoyer le même payload que le microcontrôleur. Il valide le flux critique :
+Le module ESP32 + DHT11 a été travaillé avec Thonny et MicroPython. Le rendu inclut maintenant une capture Thonny montrant le script MicroPython et les messages MQTT publiés. Lorsque le matériel n'est pas disponible le jour de la soutenance, le projet conserve aussi un scénario reproductible MQTT sans ESP32. Ce scénario utilise `mosquitto_pub` pour envoyer le même payload que le microcontrôleur. Il valide le flux critique :
 
 ```text
 MQTT -> mqtt_bridge -> API pays -> MySQL -> API centrale -> frontend
 ```
 
-Cela ne remplace pas la démonstration matérielle si elle est possible le jour J, mais cela sécurise la preuve technique.
+Cela ne remplace pas la démonstration matérielle si elle est possible le jour J, mais cela sécurise la preuve technique et donne une preuve visuelle claire dans le rapport.
 
 <div style="page-break-after: always;"></div>
 
@@ -712,6 +712,14 @@ Le matériel utilisé :
 - connexion USB au PC ;
 - Thonny IDE.
 
+![Capteur DHT11](../capture/DHT11.jpg)
+
+**Figure 4 - Capteur DHT11 utilisé pour mesurer la température et l'humidité.**
+
+![Carte de prototypage IoT](../capture/ESP8266.jpg)
+
+**Figure 5 - Carte de prototypage utilisée pour le module IoT. Le câblage final du projet utilise le signal DATA sur GPIO32.**
+
 ## 10.2 Branchement
 
 Le branchement retenu :
@@ -757,6 +765,10 @@ Payload envoyé :
 ```json
 {"id_entrepot":1,"temperature":26.5,"humidite":55}
 ```
+
+![Test MicroPython dans Thonny](../capture/Thonny.jpg)
+
+**Figure 6 - Exécution du script MicroPython dans Thonny : connexion Wi-Fi, connexion MQTT et publication des mesures DHT11 au format JSON.**
 
 ## 10.5 Gestion des erreurs
 
@@ -812,13 +824,13 @@ Cette séparation est logique : l'API pays reste REST, et le bridge fait le lien
 
 ![Preuve MQTT](assets/mqtt_bridge_log.png)
 
-**Figure 4 - Le bridge reçoit une mesure MQTT et obtient une réponse HTTP 201.**
+**Figure 7 - Le bridge reçoit une mesure MQTT et obtient une réponse HTTP 201.**
 
 ## 11.6 Preuve API centrale après persistance
 
 ![Dernière mesure API centrale](assets/latest_mesure_brazil.png)
 
-**Figure 5 - Dernière mesure lue via l'API centrale.**
+**Figure 8 - Dernière mesure lue via l'API centrale.**
 
 ## 11.7 Test sans ESP32
 
@@ -849,11 +861,11 @@ Le dashboard permet de sélectionner un pays sur la carte. Il donne un premier n
 
 ![Dashboard Brésil](assets/dashboard_bresil.png)
 
-**Figure 6 - Dashboard avec sélection du Brésil.**
+**Figure 9 - Dashboard avec sélection du Brésil.**
 
 ![Dashboard Équateur](assets/dashboard_equateur.png)
 
-**Figure 7 - Dashboard avec sélection de l'Équateur.**
+**Figure 10 - Dashboard avec sélection de l'Équateur.**
 
 ## 12.2 Page Exploitations
 
@@ -869,7 +881,7 @@ La page Exploitations permet de :
 
 ![Page Exploitations](assets/exploitations_bresil.png)
 
-**Figure 8 - Page Exploitations avec jauges et graphe.**
+**Figure 11 - Page Exploitations avec jauges et graphe.**
 
 ## 12.3 Correction du graphe
 
@@ -898,7 +910,7 @@ La page Entrepôts fournit une vue plus opérationnelle :
 
 ![Page Entrepôts](assets/entrepots_bresil.png)
 
-**Figure 9 - Page Entrepôts avec historique et contexte d'alerte.**
+**Figure 12 - Page Entrepôts avec historique et contexte d'alerte.**
 
 ## 12.5 Choix UX
 
@@ -966,17 +978,25 @@ Les secrets SMTP ne doivent pas être commit dans Git.
 
 ![Preuve alerte log](assets/api_alert_log.png)
 
-**Figure 10 - Exemple de contenu d'alerte journalisé dans Docker.**
+**Figure 13 - Exemple de contenu d'alerte journalisé dans Docker.**
 
 ## 13.6 Preuve SMTP
 
-Le mode SMTP réel a été testé localement après configuration du fichier `.env`. Le comportement attendu est :
+Le mode SMTP réel a été testé localement après configuration du fichier `.env`. Le comportement observé est :
 
 ```text
 Email alert sent to ...
 ```
 
-Pour un rendu final PDF encore plus fort, ajouter une capture de l'e-mail reçu dans la boîte mail. Cette capture n'est pas dans le dépôt pour éviter d'exposer une adresse personnelle, mais elle peut être ajoutée manuellement avant conversion PDF.
+![Liste des alertes e-mail reçues](<../capture/Mail 2.png>)
+
+**Figure 14 - Boîte mail montrant plusieurs alertes FutureKawa reçues automatiquement.**
+
+![Détail d'une alerte e-mail](../capture/Mail.png)
+
+**Figure 15 - Détail d'une alerte e-mail avec mesure, température, humidité, statut et seuils attendus.**
+
+Cette preuve complète le mode `log` : le système peut écrire l'alerte dans Docker pour le développement et envoyer un vrai e-mail en mode SMTP.
 
 <div style="page-break-after: always;"></div>
 
@@ -1199,15 +1219,23 @@ Dans Jenkins :
 6. mettre `Jenkinsfile` comme script path ;
 7. lancer Build Now.
 
-## 16.5 Preuve attendue
+## 16.5 Preuves Jenkins
 
-Pour le rendu final, une capture Jenkins utile serait :
+Les captures Jenkins ci-dessous renforcent la validation de la grille, car elles montrent à la fois le job, les stages et la console de sortie.
 
-- le job vert ;
-- la liste des stages ;
-- la console montrant `FutureKawa CI pipeline completed successfully`.
+![Job Jenkins FutureKawa](../capture/jenkins.png)
 
-Si Jenkins n'est pas disponible au moment de convertir le PDF, le rapport conserve au minimum le `Jenkinsfile` et les commandes équivalentes.
+**Figure 16 - Job Jenkins FutureKawa-MSPR avec dernier build en succès.**
+
+![Pipeline Jenkins vert](<../capture/jenkins 3.png>)
+
+**Figure 17 - Pipeline Jenkins avec les étapes validées : checkout, validation Docker Compose, builds API, frontend et bridge MQTT.**
+
+![Console Jenkins succès](<../capture/jenkins 2.png>)
+
+**Figure 18 - Console Jenkins montrant la fin du pipeline avec `FutureKawa CI pipeline completed successfully`.**
+
+Ces preuves montrent que le projet ne se limite pas à une exécution locale manuelle : il possède une chaîne de validation automatisée.
 
 <div style="page-break-after: always;"></div>
 
@@ -1839,15 +1867,16 @@ pandoc docs/rendu/MSPR_TPRE814_FutureKawa_rapport_complet.md -o docs/rendu/MSPR_
 
 Selon l'outil utilisé, il peut être nécessaire d'ajuster la taille des images. Les sauts de page HTML sont déjà placés pour obtenir un rendu proche d'un rapport long.
 
-## 24.6 Captures à ajouter si disponibles
+## 24.6 Captures intégrées
 
-Pour maximiser la force du rendu final, ajouter avant conversion PDF :
+Les captures suivantes sont maintenant intégrées directement dans les chapitres concernés :
 
-- capture Thonny montrant `published: {...}` depuis l'ESP32 ;
-- capture de l'e-mail SMTP reçu ;
-- capture Jenkins avec pipeline vert.
+- matériel IoT : capteur DHT11 et carte de prototypage ;
+- Thonny : script MicroPython, connexion MQTT et publications JSON ;
+- alertes SMTP : boîte mail et détail d'un message reçu ;
+- Jenkins : job, pipeline vert et console de succès.
 
-Ces trois captures ne changent pas le code, mais elles renforcent la preuve visuelle devant le jury.
+Ces captures couvrent les preuves les plus importantes pour la soutenance : IoT réel, transmission MQTT, persistance applicative, alertes e-mail et intégration continue.
 
 ---
 
