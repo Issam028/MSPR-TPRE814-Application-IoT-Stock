@@ -1261,13 +1261,17 @@ Les captures Jenkins ci-dessous renforcent la validation de la grille, car elles
 
 **Figure 16 - Job Jenkins FutureKawa-MSPR avec dernier build en succès.**
 
-![Pipeline Jenkins vert](<../capture/jenkins 3.png>)
+![Pipeline Jenkins vert avec artefacts](../capture/jenkins_pipeline_tests.png)
 
-**Figure 17 - Pipeline Jenkins avec validation des étapes CI.**
+**Figure 17 - Pipeline Jenkins après mise à jour CI : validation Docker Compose, builds applicatifs, image MQTT bridge et archivage des artefacts.**
 
-![Console Jenkins succès](<../capture/jenkins 2.png>)
+![Console Jenkins tests automatisés](../capture/jenkins_console_tests.png)
 
-**Figure 18 - Console Jenkins montrant la fin du pipeline avec `FutureKawa CI pipeline completed successfully`.**
+**Figure 18 - Console Jenkins montrant l'exécution de `npm test` et le résultat `FutureKawa automated tests passed`.**
+
+![Console Jenkins succès final](../capture/jenkins_console_tests_2.png)
+
+**Figure 19 - Console Jenkins montrant la fin du pipeline avec `FutureKawa CI pipeline completed successfully`.**
 
 Ces preuves montrent que le projet ne se limite pas à une exécution locale manuelle : il possède une chaîne de validation automatisée.
 
@@ -1575,6 +1579,18 @@ La documentation détaillée se trouve dans :
 ```text
 docs/erp/progiciel_integre.md
 ```
+
+![ERP health](../capture/erp_health.png)
+
+**Figure 20 - Endpoint `/erp/health` exposant l'état du connecteur ERP FutureKawa.**
+
+![ERP stock movements](<../capture/erp_stock-movements.png>)
+
+**Figure 21 - Endpoint `/erp/stock-movements` exposant les lots dans un format exploitable par un module stock.**
+
+![ERP quality alerts](../capture/erp_quality_alerts.png)
+
+**Figure 22 - Endpoint `/erp/quality-alerts` exposant les non-conformités qualité dans un format ERP.**
 
 Le projet ne prétend pas remplacer un vrai déploiement SAP, Microsoft Dynamics ou Salesforce. En revanche, il démontre concrètement l'intégration applicative attendue : endpoints dédiés, mapping métier, séparation stock/qualité et préparation à l'échange avec un SI de gestion.
 
