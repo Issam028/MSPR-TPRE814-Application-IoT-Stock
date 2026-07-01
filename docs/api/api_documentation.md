@@ -2,7 +2,7 @@
 
 ## API CENTRALE
 **Base:** `http://central-api:PORT`  
-**Préfixe:** `/:country` (brazil / colombia)
+**Préfixe:** `/:country` (brazil / colombia / ecuador)
 
 ### EXPLOITATIONS
 - `GET /:country/exploitations` — Toutes les exploitations

@@ -6,10 +6,6 @@ import { Exploitation } from './exploitations/exploitation.entity';
 import { Lot } from './lots/lot.entity';
 import { Mesure } from './mesures/mesure.entity';
 
-const TEMPERATURE_MIN = 24;
-const TEMPERATURE_MAX = 30;
-const HUMIDITE_MIN = 50;
-const HUMIDITE_MAX = 60;
 const EXPIRED_AFTER_DAYS = 365;
 const ALERT_FROM_DAYS = 330;
 
@@ -25,6 +21,15 @@ const toFloat = (value: string | undefined, fallback: number): number => {
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(max, Math.max(min, value));
+
+const TEMPERATURE_TARGET = toFloat(process.env.ALERT_TEMPERATURE_TARGET, 27);
+const TEMPERATURE_TOLERANCE = toFloat(process.env.ALERT_TEMPERATURE_TOLERANCE, 3);
+const HUMIDITE_TARGET = toFloat(process.env.ALERT_HUMIDITE_TARGET, 55);
+const HUMIDITE_TOLERANCE = toFloat(process.env.ALERT_HUMIDITE_TOLERANCE, 5);
+const TEMPERATURE_MIN = TEMPERATURE_TARGET - TEMPERATURE_TOLERANCE;
+const TEMPERATURE_MAX = TEMPERATURE_TARGET + TEMPERATURE_TOLERANCE;
+const HUMIDITE_MIN = HUMIDITE_TARGET - HUMIDITE_TOLERANCE;
+const HUMIDITE_MAX = HUMIDITE_TARGET + HUMIDITE_TOLERANCE;
 
 const titleCase = (value: string): string =>
   value

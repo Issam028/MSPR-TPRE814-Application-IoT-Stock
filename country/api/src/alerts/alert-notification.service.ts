@@ -18,6 +18,10 @@ export class AlertNotificationService {
     temperature: number;
     humidite: number;
     statut: string;
+    temperatureMin: number;
+    temperatureMax: number;
+    humiditeMin: number;
+    humiditeMax: number;
   }): Promise<void> {
     await this.sendAlert({
       subject: `[FutureKawa] Alerte entrepot ${params.idEntrepot}`,
@@ -29,7 +33,7 @@ export class AlertNotificationService {
         `Humidite: ${params.humidite} %`,
         `Statut: ${params.statut}`,
         '',
-        'Seuils attendus: temperature 24-30 C, humidite 50-60 %.',
+        `Seuils attendus: temperature ${params.temperatureMin}-${params.temperatureMax} C, humidite ${params.humiditeMin}-${params.humiditeMax} %.`,
       ].join('\n'),
     });
   }

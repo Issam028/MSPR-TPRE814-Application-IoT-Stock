@@ -13,10 +13,13 @@ Une alerte est declenchee dans deux cas :
 
 Seuils mesures :
 
-| Mesure | Conforme |
-| --- | --- |
-| Temperature | `24 C` a `30 C` |
-| Humidite | `50 %` a `60 %` |
+| Pays | Temperature conforme | Humidite conforme |
+| --- | --- | --- |
+| Brazil | `26 C` a `32 C` | `53 %` a `57 %` |
+| Colombia | `23 C` a `29 C` | `78 %` a `82 %` |
+| Ecuador | `28 C` a `34 C` | `58 %` a `62 %` |
+
+Ces seuils sont configures par variables d'environnement a partir des valeurs ideales du sujet et de la tolerance demandee : `+/- 3 C` et `+/- 2 %`.
 
 ## Modes
 

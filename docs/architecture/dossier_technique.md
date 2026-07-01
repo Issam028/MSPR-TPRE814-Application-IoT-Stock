@@ -76,10 +76,13 @@ Payload MQTT :
 
 ## Regles d'alerte
 
-Une mesure est marquee `en alerte` si :
+Une mesure est marquee `en alerte` si elle sort des seuils configures pour le pays :
 
-- temperature inferieure a `24 C` ou superieure a `30 C`
-- humidite inferieure a `50 %` ou superieure a `60 %`
+| Pays | Temperature cible | Humidite cible | Tolerance |
+| --- | --- | --- | --- |
+| Brazil | `29 C` | `55 %` | `+/- 3 C`, `+/- 2 %` |
+| Colombia | `26 C` | `80 %` | `+/- 3 C`, `+/- 2 %` |
+| Ecuador | `31 C` | `60 %` | `+/- 3 C`, `+/- 2 %` |
 
 Sinon, la mesure est `conforme`.
 
