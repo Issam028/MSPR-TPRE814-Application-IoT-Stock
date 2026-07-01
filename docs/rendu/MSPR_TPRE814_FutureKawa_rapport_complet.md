@@ -1513,14 +1513,33 @@ Le POC protège déjà certains points :
 - les variables d'environnement configurent les accès ;
 - Docker isole les services ;
 - les bases sont séparées par pays ;
-- le frontend ne contacte pas directement les APIs pays.
+- le frontend ne contacte pas directement les APIs pays ;
+- les exports ERP sensibles sont protégés par clé API ;
+- les exports ERP utilisent un contrôle de rôle simple avec `x-user-role` ;
+- les accès ERP autorisés ou refusés sont journalisés dans les logs de l'API.
+
+Le module ERP attend les en-têtes suivants pour les routes sensibles :
+
+```text
+x-api-key: futurekawa-demo-key
+x-user-role: stock
+```
+
+ou :
+
+```text
+x-api-key: futurekawa-demo-key
+x-user-role: quality
+```
+
+La route `/erp/health` reste publique afin de permettre une supervision simple du connecteur. Les routes `/erp/stock-movements` et `/erp/quality-alerts` nécessitent une clé API et un rôle autorisé.
 
 ## 20.2 Limites de sécurité
 
 Pour une mise en production, il faudrait ajouter :
 
-- authentification ;
-- autorisation par rôle ;
+- authentification utilisateur complète, par exemple JWT ou SSO ;
+- gestion centralisée des rôles utilisateurs ;
 - HTTPS ;
 - rotation des secrets ;
 - validation stricte des payloads ;
@@ -1546,7 +1565,7 @@ Le projet ne couvre pas encore :
 
 - un ERP réel ;
 - une intégration Salesforce/SAP/MSDynamics ;
-- un vrai module de droits utilisateur ;
+- un module complet de comptes utilisateurs et permissions applicatives ;
 - l'export de rapports métier ;
 - les actionneurs physiques de phase 2 ;
 - un dashboard décisionnel complet.
@@ -1633,6 +1652,7 @@ Le projet ne prétend pas remplacer un vrai déploiement SAP, Microsoft Dynamics
 - le graphe a été corrigé pour être lisible ;
 - un module ERP stock/qualité est présent ;
 - des tests automatisés couvrent les règles métier critiques ;
+- les exports ERP sont protégés par clé API et rôle ;
 - le suivi anomalie/correction/re-test est formalisé ;
 - le rapport inclut des preuves visuelles ;
 - le projet est lançable par Docker Compose ;
@@ -1642,7 +1662,7 @@ Le projet ne prétend pas remplacer un vrai déploiement SAP, Microsoft Dynamics
 
 Certains éléments restent à considérer dans une version industrialisée :
 
-- renforcer l'authentification et la gestion des droits ;
+- remplacer la clé API ERP par une authentification JWT ou SSO complète ;
 - ajouter une supervision centralisée des services ;
 - historiser plus finement les événements d'exploitation ;
 - étendre les tests automatisés jusqu'à l'E2E navigateur ;
@@ -1712,6 +1732,7 @@ Le projet n'est pas un module SAP ou Salesforce complet. En revanche, il contien
 - mapping des lots vers un module stock ;
 - mapping des mesures en alerte vers un module qualité ;
 - statuts normalisés pour un SI externe ;
+- protection des exports par clé API et rôle ;
 - documentation dédiée `docs/erp/progiciel_integre.md` ;
 - tests automatisés du mapping ERP.
 

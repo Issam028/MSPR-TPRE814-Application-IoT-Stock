@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ErpExportService } from './erp-export.service';
+import { ApiKeyRoleGuard } from '../security/api-key-role.guard';
+import { Roles } from '../security/roles.decorator';
 
 @Controller('erp')
 export class ErpExportController {
@@ -11,11 +13,15 @@ export class ErpExportController {
   }
 
   @Get('stock-movements')
+  @UseGuards(ApiKeyRoleGuard)
+  @Roles('admin', 'stock')
   getStockMovements() {
     return this.erpExportService.getStockMovements();
   }
 
   @Get('quality-alerts')
+  @UseGuards(ApiKeyRoleGuard)
+  @Roles('admin', 'quality')
   getQualityAlerts() {
     return this.erpExportService.getQualityAlerts();
   }

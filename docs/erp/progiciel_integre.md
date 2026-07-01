@@ -22,6 +22,38 @@ GET /erp/stock-movements
 GET /erp/quality-alerts
 ```
 
+## Sécurité des exports
+
+La route de supervision `/erp/health` reste publique afin de permettre un contrôle rapide de disponibilité.
+
+Les routes d'export sont protégées par une clé API et un rôle :
+
+```text
+x-api-key: futurekawa-demo-key
+x-user-role: stock
+```
+
+pour :
+
+```text
+GET /erp/stock-movements
+```
+
+et :
+
+```text
+x-api-key: futurekawa-demo-key
+x-user-role: quality
+```
+
+pour :
+
+```text
+GET /erp/quality-alerts
+```
+
+Un rôle `admin` peut accéder aux deux exports. Un appel sans clé API ou avec un rôle incorrect reçoit une réponse HTTP 401.
+
 ## Correspondance ERP
 
 | Besoin ERP | Route FutureKawa | Module ERP cible |
