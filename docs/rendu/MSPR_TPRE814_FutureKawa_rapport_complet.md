@@ -1086,7 +1086,21 @@ Ces tests automatisés vérifient :
 - la transformation d'un lot vers un payload ERP stock ;
 - la transformation d'une mesure en alerte vers un payload ERP qualité.
 
-## 15.3 T01 - Démarrage
+## 15.3 Résultats de vérification
+
+Les vérifications suivantes ont été exécutées localement le 1 juillet 2026 après l'ajout du module ERP, des tests automatisés et des mises à jour Jenkins.
+
+| Vérification | Commande | Résultat |
+| --- | --- | --- |
+| Validation Docker Compose | `docker compose --profile dev config --quiet` | OK |
+| Tests automatisés API pays | `npm test` dans `country/api` | OK - `FutureKawa automated tests passed` |
+| Build API pays | `npm run build` dans `country/api` | OK |
+| Build API centrale | `npm run build` dans `central/api` | OK |
+| Build frontend | `npm run build` dans `central/app` | OK |
+
+Cette vérification complète les tests manuels : elle prouve que les règles métier critiques, le mapping ERP et les builds applicatifs sont reproductibles par commande.
+
+## 15.4 T01 - Démarrage
 
 Commande :
 
@@ -1104,7 +1118,7 @@ Résultat attendu :
 - broker MQTT up ;
 - bridge up.
 
-## 15.4 T02 - Mesure conforme
+## 15.5 T02 - Mesure conforme
 
 Commande :
 
@@ -1118,7 +1132,7 @@ Résultat attendu :
 - statut conforme pour Brazil ;
 - mesure persistée.
 
-## 15.5 T03 - Mesure en alerte
+## 15.6 T03 - Mesure en alerte
 
 Commande :
 
@@ -1132,7 +1146,7 @@ Résultat attendu :
 - statut `en alerte` ;
 - notification log ou SMTP.
 
-## 15.6 T04 - MQTT
+## 15.7 T04 - MQTT
 
 Commande :
 
@@ -1147,7 +1161,7 @@ Résultat attendu :
 - POST API ;
 - HTTP 201.
 
-## 15.7 T05 - Interface web
+## 15.8 T05 - Interface web
 
 URL :
 
@@ -1166,7 +1180,7 @@ http://localhost:8080
 7. vérifier historique récent ;
 8. vérifier alertes.
 
-## 15.8 T06 - Multi-pays
+## 15.9 T06 - Multi-pays
 
 Commandes :
 
@@ -1249,7 +1263,7 @@ Les captures Jenkins ci-dessous renforcent la validation de la grille, car elles
 
 ![Pipeline Jenkins vert](<../capture/jenkins 3.png>)
 
-**Figure 17 - Pipeline Jenkins avec les étapes validées : checkout, validation Docker Compose, builds API, frontend et bridge MQTT.**
+**Figure 17 - Pipeline Jenkins avec validation des étapes CI.**
 
 ![Console Jenkins succès](<../capture/jenkins 2.png>)
 
