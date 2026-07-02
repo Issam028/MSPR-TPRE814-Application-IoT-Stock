@@ -510,7 +510,25 @@ Entrepôt 1,n Mesure
 
 Un entrepôt est donc le point central du modèle : il relie les lots physiques et les mesures IoT.
 
-## 7.3 Table exploitations
+## 7.3 Diagramme MCD / ERD
+
+Le diagramme ci-dessous reprend le modèle réel défini dans `country/init.sql` et les entités TypeORM de `country/api/src`.
+
+![MCD FutureKawa](../database/mcd_futurekawa.png)
+
+**Figure - MCD / ERD FutureKawa : exploitations, entrepôts, lots et mesures.**
+
+Les cardinalités validées dans le schéma sont :
+
+| Relation | Cardinalité | Preuve |
+| --- | --- | --- |
+| Exploitation vers entrepôts | 1 exploitation peut posséder 0 à n entrepôts | FK `entrepots.id_exploitation` |
+| Entrepôt vers lots | 1 entrepôt peut stocker 0 à n lots | FK `lots.id_entrepot` |
+| Entrepôt vers mesures | 1 entrepôt peut recevoir 0 à n mesures | FK `mesures.id_entrepot` |
+
+Les clés étrangères sont déclarées dans `country/init.sql` avec `ON DELETE SET NULL`. Ce choix permet de conserver l'historique des lots et des mesures même si un rattachement métier est supprimé. La traçabilité est donc conservée par les identifiants techniques, les timestamps et les statuts.
+
+## 7.4 Table exploitations
 
 La table `exploitations` contient :
 
@@ -519,7 +537,7 @@ La table `exploitations` contient :
 
 Elle sert à regrouper les entrepôts par zone métier.
 
-## 7.4 Table entrepots
+## 7.5 Table entrepots
 
 La table `entrepots` contient :
 
@@ -529,7 +547,7 @@ La table `entrepots` contient :
 
 Elle permet d'afficher les entrepôts d'une exploitation sélectionnée.
 
-## 7.5 Table lots
+## 7.6 Table lots
 
 La table `lots` contient :
 
@@ -540,7 +558,7 @@ La table `lots` contient :
 
 Le statut permet de signaler un lot conforme, en alerte ou périmé.
 
-## 7.6 Table mesures
+## 7.7 Table mesures
 
 La table `mesures` contient :
 
@@ -553,7 +571,66 @@ La table `mesures` contient :
 
 Chaque mesure est historisée. Le frontend peut donc afficher les dernières mesures et les courbes.
 
-## 7.7 Justification du choix SQL
+## 7.8 Utilisation du jeu de données présent dans le dépôt
+
+L'audit du dépôt n'a pas trouvé de fichier CSV, Excel ou JSON officiel de dataset école. Le fichier de données fourni par l'école n'est pas présent dans le dépôt sous un nom identifiable et doit être ajouté manuellement si un autre fichier officiel existe.
+
+Le dépôt contient toutefois un jeu SQL exploitable dans `docs/data_tests` :
+
+| Fichier | Format | Colonnes | Lignes de données |
+| --- | --- | --- | ---: |
+| `docs/data_tests/exploitations.sql` | SQL `INSERT` | `id_exploitation`, `nom` | 2 |
+| `docs/data_tests/entrepots.sql` | SQL `INSERT` | `id_entrepot`, `id_exploitation`, `nom` | 7 |
+| `docs/data_tests/mesures.sql` | SQL `INSERT` | `id_entrepot`, `temperature`, `humidite`, `statut`, `timestamp` | 120 |
+
+Un importeur reproductible a été ajouté :
+
+```text
+country/api/src/dataset/import-data-tests.ts
+```
+
+Commande de validation sans base :
+
+```powershell
+cd country/api
+npm run dataset:import -- --dry-run
+```
+
+Commande d'import réel lorsque Docker et MySQL sont lancés :
+
+```powershell
+cd country/api
+$env:DB_HOST="localhost"
+$env:DB_PORT="3308"
+$env:DB_USER="root"
+$env:DB_PASS="root"
+$env:DB_NAME="colombia_db"
+npm run dataset:import
+```
+
+Résultat réel du dry-run exécuté le 2 juillet 2026 :
+
+| Indicateur | Valeur |
+| --- | ---: |
+| Lignes lues | 129 |
+| Lignes importables | 114 |
+| Lignes ignorées dans le fichier | 0 |
+| Lignes rejetées | 15 |
+| Exploitations importables | 2 |
+| Entrepôts importables | 7 |
+| Mesures importables | 105 |
+
+Les 15 lignes rejetées correspondent aux mesures dont `id_entrepot = 5`. Le fichier `docs/data_tests/entrepots.sql` ne crée pas cet entrepôt ; l'importeur rejette donc ces lignes pour éviter une violation de clé étrangère.
+
+Le dataset ne contient pas de colonne pays. La règle retenue est donc de cibler la base choisie par variables d'environnement. Par défaut, l'importeur vise `colombia_db` sur le port local `3308`, car les exploitations du fichier sont `Colombia Farm` et `Colombia Farm2`.
+
+La documentation détaillée de l'import et des requêtes de vérification se trouve dans :
+
+```text
+docs/database/import_jeu_de_donnees.md
+```
+
+## 7.9 Justification du choix SQL
 
 Le sujet demande une persistance SQL. MySQL est adapté car :
 

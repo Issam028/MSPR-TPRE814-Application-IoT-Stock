@@ -1,0 +1,31 @@
+erDiagram
+    exploitations ||--o{ entrepots : "possede"
+    entrepots ||--o{ lots : "stocke"
+    entrepots ||--o{ mesures : "recoit"
+
+    exploitations {
+        BIGINT id_exploitation PK
+        VARCHAR_100 nom "NOT NULL"
+    }
+
+    entrepots {
+        BIGINT id_entrepot PK
+        BIGINT id_exploitation FK "nullable"
+        VARCHAR_100 nom "nullable"
+    }
+
+    lots {
+        BIGINT id_lot PK
+        BIGINT id_entrepot FK "nullable"
+        TIMESTAMP date_stockage "DEFAULT CURRENT_TIMESTAMP"
+        VARCHAR_20 statut "nullable"
+    }
+
+    mesures {
+        INT id_mesure PK
+        BIGINT id_entrepot FK "nullable"
+        FLOAT temperature "nullable"
+        FLOAT humidite "nullable"
+        VARCHAR_20 statut "nullable"
+        TIMESTAMP timestamp "DEFAULT CURRENT_TIMESTAMP"
+    }

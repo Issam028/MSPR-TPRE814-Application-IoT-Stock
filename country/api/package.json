@@ -9,7 +9,8 @@
     "test": "ts-node --transpile-only -r tsconfig-paths/register test/run-tests.ts",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
-    "seed": "ts-node src/seed.ts"
+    "seed": "ts-node src/seed.ts",
+    "dataset:import": "ts-node src/dataset/import-data-tests.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
