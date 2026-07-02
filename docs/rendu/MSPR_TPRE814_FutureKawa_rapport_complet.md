@@ -248,6 +248,40 @@ Les éléments non prioritaires pour cette version :
 
 Ces limites sont assumées et présentées dans la partie dédiée.
 
+## 3.5 Collecte et restitution des besoins métiers
+
+La collecte des besoins a été formalisée à partir du sujet, d'un questionnaire-type et d'entretiens simulés avec les profils métiers concernés. Le rapport ne prétend pas que de vrais utilisateurs FutureKawa ont été interviewés. L'objectif est de montrer une démarche professionnelle : identifier les acteurs, poser les bonnes questions, classer les contraintes, puis transformer les réponses en fonctionnalités livrées.
+
+Acteurs pris en compte :
+
+- responsable exploitation ;
+- responsable entrepôt ;
+- direction qualité ;
+- direction SI ;
+- siège FutureKawa.
+
+Méthode retenue :
+
+1. Lecture du cahier des charges et extraction des obligations.
+2. Préparation d'un questionnaire-type.
+3. Simulation de réponses métier réalistes.
+4. Regroupement par thèmes : stock, qualité, IoT, supervision, contraintes terrain.
+5. Priorisation simple : haute, moyenne, basse.
+6. Transformation en exigences fonctionnelles et techniques.
+
+| Acteur | Question posée | Réponse ou besoin identifié | Contrainte | Priorité | Fonctionnalité correspondante |
+| --- | --- | --- | --- | --- | --- |
+| Responsable exploitation | Comment suivre rapidement les sites d'un pays ? | Avoir une vision centralisée par pays et par exploitation | Plusieurs pays doivent rester séparés | Haute | Sélecteur pays, page exploitations, API centrale |
+| Responsable entrepôt | Comment vérifier les lots à traiter en priorité ? | Identifier les lots anciens et appliquer une logique FIFO | Les équipes terrain doivent lire l'information vite | Haute | Page entrepôts, lots, statuts conforme/alerte/périmé |
+| Direction qualité | Comment détecter les risques de conservation ? | Conserver l'historique température/humidité et signaler les seuils dépassés | Les mesures doivent être horodatées | Haute | Mesures IoT, graphes, alertes qualité |
+| Direction SI | Que faire si le réseau terrain est instable ? | Accepter un flux MQTT simple et rejouable | Démonstration possible même sans capteur disponible | Moyenne | MQTT bridge, scénario `mosquitto_pub`, logs |
+| Responsable entrepôt | L'interface doit-elle être complexe ? | Non, l'écran doit rester simple et exploitable en opération | Utilisation par des non-développeurs | Haute | Dashboard, alertes cliquables, détails exploitation |
+| Siège FutureKawa | Comment consolider les données des pays ? | Interroger les APIs pays depuis un point central | Les données pays restent isolées | Haute | API centrale, architecture pays + siège |
+| Direction qualité | Comment être prévenu en cas de problème ? | Recevoir une alerte exploitable rapidement | Le mail peut être SMTP réel ou log en POC | Haute | Service alertes, notification mail/log |
+| Direction SI | Comment préparer une intégration ERP ? | Exposer des flux stock et qualité normalisés | Pas de SAP/Dynamics réel dans le POC | Moyenne | Adaptateur ERP simulé, routes `/erp/*` |
+
+La restitution des besoins est faite sous forme de synthèse dans le présent rapport, de documentation technique dans `docs/`, et de correspondance avec les fonctionnalités livrées. Les besoins ont été priorisés selon une logique proche de MoSCoW : les fonctions de surveillance, d'alerte, de consultation et de démonstration IoT sont traitées comme indispensables ; l'ERP réel, la supervision avancée et les rôles utilisateurs complets sont documentés comme évolutions industrielles.
+
 <div style="page-break-after: always;"></div>
 
 # 4. Périmètre fonctionnel livré
@@ -700,9 +734,11 @@ Le matériel utilisé :
 
 **Figure 4 - Capteur DHT11 utilisé pour mesurer la température et l'humidité.**
 
-![Carte de prototypage IoT](../capture/ESP8266.jpg)
+![Schema de cablage ESP32 DHT11](../capture/esp32_dht11_wiring.png)
 
-**Figure 5 - Carte de prototypage utilisée pour le module IoT. Le câblage final du projet utilise le signal DATA sur GPIO32.**
+**Figure 5 - Schéma exact du câblage DHT11 vers ESP32 : VCC vers 3V3, GND vers GND, DATA vers GPIO32.**
+
+Faute de photo fiable de la carte ESP32 réellement utilisée, le rapport privilégie ce schéma de câblage exact. Le projet présenté utilise bien un ESP32 avec MicroPython et le signal DATA du DHT11 sur GPIO32.
 
 ## 10.2 Branchement
 
@@ -1100,7 +1136,24 @@ Les vérifications suivantes ont été exécutées localement le 1 juillet 2026 
 
 Cette vérification complète les tests manuels : elle prouve que les règles métier critiques, le mapping ERP et les builds applicatifs sont reproductibles par commande.
 
-## 15.4 T01 - Démarrage
+## 15.4 Positionnement E2E navigateur
+
+Le dépôt contient un script Playwright utilisé pour produire des captures de preuve (`docs/rendu/capture_evidence.py`). En revanche, il n'existe pas encore de suite Playwright ou Cypress stable intégrée au frontend et exécutée automatiquement dans Jenkins.
+
+Pour éviter de survalider le critère, le test E2E navigateur est donc présenté comme un scénario manuel contrôlé :
+
+1. démarrer Docker Compose ;
+2. ouvrir le frontend ;
+3. sélectionner le Brésil ;
+4. ouvrir une exploitation ;
+5. consulter les mesures ;
+6. cliquer une alerte ;
+7. vérifier la navigation vers la page exploitations ;
+8. contrôler que l'API centrale retourne les mêmes données.
+
+Cette limite est volontairement documentée : l'automatisation E2E complète reste une amélioration d'industrialisation, alors que les tests automatisés actuels sécurisent déjà les règles métier critiques et le mapping ERP.
+
+## 15.5 T01 - Démarrage
 
 Commande :
 
@@ -1118,7 +1171,7 @@ Résultat attendu :
 - broker MQTT up ;
 - bridge up.
 
-## 15.5 T02 - Mesure conforme
+## 15.6 T02 - Mesure conforme
 
 Commande :
 
@@ -1132,7 +1185,7 @@ Résultat attendu :
 - statut conforme pour Brazil ;
 - mesure persistée.
 
-## 15.6 T03 - Mesure en alerte
+## 15.7 T03 - Mesure en alerte
 
 Commande :
 
@@ -1146,7 +1199,7 @@ Résultat attendu :
 - statut `en alerte` ;
 - notification log ou SMTP.
 
-## 15.7 T04 - MQTT
+## 15.8 T04 - MQTT
 
 Commande :
 
@@ -1161,7 +1214,7 @@ Résultat attendu :
 - POST API ;
 - HTTP 201.
 
-## 15.8 T05 - Interface web
+## 15.9 T05 - Interface web
 
 URL :
 
@@ -1180,7 +1233,7 @@ http://localhost:8080
 7. vérifier historique récent ;
 8. vérifier alertes.
 
-## 15.9 T06 - Multi-pays
+## 15.10 T06 - Multi-pays
 
 Commandes :
 
@@ -1417,7 +1470,19 @@ Actions :
 - organiser un pilote ;
 - valider la généralisation.
 
-## 18.5 Indicateurs de réussite
+## 18.5 Application du modèle de transition de William Bridges
+
+Le modèle de William Bridges complète les quatre axes précédents. Il distingue la transition vécue par les utilisateurs en trois moments : accepter la fin d'anciennes habitudes, traverser une zone d'incertitude, puis adopter une nouvelle manière de travailler.
+
+| Étape Bridges | Risque utilisateur | Action FutureKawa | Responsable | Indicateur |
+| --- | --- | --- | --- | --- |
+| Fin, perte, abandon | Les responsables continuent à suivre les lots uniquement avec des fichiers locaux | Expliquer pourquoi les anciennes pratiques ne suffisent plus pour les alertes température/humidité | Direction qualité + SI | Nombre de sites ayant arrêté le suivi manuel seul |
+| Zone neutre | Les utilisateurs hésitent entre l'ancien suivi et le nouveau dashboard | Organiser un pilote sur un pays, recueillir les retours, ajuster les seuils et corriger les irritants | Référent exploitation + SI | Nombre de retours traités et anomalies re-testées |
+| Nouveau départ, adoption | L'outil est vu comme une contrainte technique supplémentaire | Nommer des référents, former les équipes, montrer les alertes résolues grâce au système | Responsable exploitation | Taux d'utilisation du dashboard et temps moyen de réaction |
+
+Cette approche permet de ne pas limiter la conduite du changement à une communication descendante. Les utilisateurs participent au réglage des seuils, à la validation des alertes et à la priorisation des améliorations.
+
+## 18.6 Indicateurs de réussite
 
 | Indicateur | Objectif |
 | --- | --- |
@@ -1572,13 +1637,13 @@ Le projet ne couvre pas encore :
 
 ## 20.5 Justification concernant l'ERP
 
-La grille mentionne le développement dans un progiciel intégré. Le sujet FutureKawa demande surtout une solution applicative spécifique avec IoT, API, SQL, web, Docker et Jenkins. Pour renforcer ce point, le projet ajoute un module d'intégration ERP côté API pays :
+La grille mentionne le développement dans un progiciel intégré. Le projet ne doit pas être présenté comme une intégration réelle SAP, Microsoft Dynamics ou Salesforce. La réalisation correspond à un **adaptateur ERP simulé dans le cadre du POC**, ajouté côté API pays pour exposer les données FutureKawa dans un format consommable par un système de gestion.
 
 ```text
 country/api/src/erp/
 ```
 
-Ce module expose des endpoints dédiés :
+L'adaptateur expose des endpoints dédiés :
 
 ```text
 GET /erp/health
@@ -1586,12 +1651,20 @@ GET /erp/stock-movements
 GET /erp/quality-alerts
 ```
 
-Le rôle du module est de transformer les données FutureKawa vers des objets exploitables par un ERP :
+Les routes `/erp/stock-movements` et `/erp/quality-alerts` sont protégées par clé API et rôle simple. Le rôle du module est de transformer les données FutureKawa vers des objets JSON exploitables par un ERP :
 
 - lots vers module stock ;
 - mesures en alerte vers module qualité ;
 - identifiants externes par pays ;
 - statuts normalisés comme `AVAILABLE`, `WARNING`, `BLOCKED`, `NON_CONFORMITY`.
+
+| Élément | Réalisé dans le POC | Limite | Évolution industrielle |
+| --- | --- | --- | --- |
+| Connecteur ERP | Routes `/erp/health`, `/erp/stock-movements`, `/erp/quality-alerts` | Pas de connexion à un ERP éditeur | Connecteur SAP/Dynamics/Salesforce via API officielle |
+| Format d'échange | JSON normalisé stock et qualité | Pas de flux CSV industriel ni EDI | Ajouter CSV planifié, EDI ou API REST sécurisée selon l'ERP cible |
+| Sécurité | Clé API et rôle simple `stock`, `quality`, `admin` | Pas de JWT/SSO complet | JWT, OAuth2, SSO, audit centralisé |
+| Langage progiciel | Mapping applicatif NestJS | Pas d'ABAP, X++, Apex ou extension native ERP | Développer le module dans le langage spécifique du progiciel retenu |
+| Synchronisation | Exports lecture seule depuis FutureKawa | Pas de synchronisation bidirectionnelle | Ajout d'accusés de réception, reprise sur erreur et rapprochement |
 
 La documentation détaillée se trouve dans :
 
@@ -1611,7 +1684,7 @@ docs/erp/progiciel_integre.md
 
 **Figure 22 - Endpoint `/erp/quality-alerts` exposant les non-conformités qualité dans un format ERP.**
 
-Le projet ne prétend pas remplacer un vrai déploiement SAP, Microsoft Dynamics ou Salesforce. En revanche, il démontre concrètement l'intégration applicative attendue : endpoints dédiés, mapping métier, séparation stock/qualité et préparation à l'échange avec un SI de gestion.
+Le projet valide donc partiellement le point ERP de la grille : il matérialise les flux et le mapping métier, mais il ne remplace pas un développement dans un vrai progiciel intégré. Cette limite est assumée et documentée pour éviter toute confusion pendant la soutenance.
 
 <div style="page-break-after: always;"></div>
 
@@ -1638,7 +1711,7 @@ Le projet ne prétend pas remplacer un vrai déploiement SAP, Microsoft Dynamics
 | Tests automatisés | Validé | `country/api/test/run-tests.ts` |
 | Tests manuels | Validé | commandes documentées |
 | Anomalies et re-tests | Validé | `docs/tests/anomalies_retests.md` |
-| Module ERP | Validé | `country/api/src/erp` |
+| Module ERP | Validé au niveau POC | adaptateur ERP simulé `country/api/src/erp` |
 | Repository Git | Validé | commits et branche poussée |
 | Documentation utilisateur | Validé | section utilisateur + docs |
 | Schéma phase 2 | Validé | section automatisation |
@@ -1673,138 +1746,19 @@ Certains éléments restent à considérer dans une version industrialisée :
 
 # 22. Validation détaillée de la grille
 
-## 22.1 Collecter les besoins
+Le tableau ci-dessous reprend les compétences de la grille avec un niveau estimé réaliste. L'objectif n'est pas d'affirmer que tout vaut 3/3, mais de montrer ce qui est prouvé, ce qui est partiel, et l'action corrective prévue.
 
-**Critère grille :** présenter les éléments de préparation à la collecte des besoins, questionnaire, contraintes métier, besoins fonctionnels.
-
-**Réponse projet :**
-
-- analyse du cahier des charges ;
-- identification des acteurs ;
-- questionnaire phase 2 ;
-- formalisation des contraintes ;
-- documentation du besoin.
-
-**Validation : critère couvert.**
-
-## 22.2 Concevoir une architecture applicative
-
-**Critère grille :** architecture distribuée, critères de stabilité, efficacité, pérennité, schéma.
-
-**Réponse projet :**
-
-- architecture pays + siège ;
-- Docker Compose ;
-- APIs pays ;
-- API centrale ;
-- MySQL par pays ;
-- MQTT ;
-- schéma dans le rapport ;
-- justification des choix.
-
-**Validation : critère couvert.**
-
-## 22.3 Développer une application adaptée
-
-**Critère grille :** développement web, mobile, embarqué, IoT, langage approprié, démonstration technique.
-
-**Réponse projet :**
-
-- React ;
-- NestJS ;
-- Python bridge ;
-- MicroPython ESP32 ;
-- MQTT ;
-- MySQL ;
-- démonstration possible par interface et commandes.
-
-**Validation : critère couvert.**
-
-## 22.4 Développer une solution intégrée
-
-**Critère grille :** environnement de progiciel intégré ou solution intégrée.
-
-**Réponse projet :**
-
-Le projet n'est pas un module SAP ou Salesforce complet. En revanche, il contient un module d'intégration ERP concret dans l'API pays :
-
-- routes `/erp/health`, `/erp/stock-movements`, `/erp/quality-alerts` ;
-- mapping des lots vers un module stock ;
-- mapping des mesures en alerte vers un module qualité ;
-- statuts normalisés pour un SI externe ;
-- protection des exports par clé API et rôle ;
-- documentation dédiée `docs/erp/progiciel_integre.md` ;
-- tests automatisés du mapping ERP.
-
-**Validation : critère couvert au niveau POC.**  
-Le périmètre ne déploie pas un ERP réel, mais il matérialise l'intégration par un adaptateur applicatif exploitable par un progiciel.
-
-## 22.5 Effectuer les tests
-
-**Critère grille :** plan de test, typologie, données de test, résultats attendus, outil de testing.
-
-**Réponse projet :**
-
-- plan T01 à T08 ;
-- tests API ;
-- tests MQTT ;
-- tests UI ;
-- tests Docker ;
-- tests automatisés métier ;
-- tests automatisés mapping ERP ;
-- suivi anomalie/correction/re-test ;
-- builds npm ;
-- preuve log ;
-- scénarios manuels.
-
-**Validation : critère couvert.**
-
-## 22.6 Appliquer l'intégration continue
-
-**Critère grille :** installer et paramétrer un outil d'intégration continue.
-
-**Réponse projet :**
-
-- Jenkinsfile ;
-- stages ;
-- exécution `npm test` ;
-- contrôle Docker Compose sans affichage des secrets ;
-- builds API/frontend/bridge ;
-- archivage artefacts ;
-- documentation Jenkins ;
-- commandes locales équivalentes.
-
-**Validation : critère couvert avec les captures Jenkins intégrées au rapport.**
-
-## 22.7 Rédiger la documentation utilisateur
-
-**Critère grille :** comparer réalisation et cahier des charges, documentation utilisateur de qualité.
-
-**Réponse projet :**
-
-- rapport complet ;
-- guide utilisateur ;
-- docs techniques ;
-- docs MQTT ;
-- docs alertes ;
-- plan de tests ;
-- README.
-
-**Validation : critère couvert.**
-
-## 22.8 Conduire le changement
-
-**Critère grille :** informer, communiquer, former, faire participer.
-
-**Réponse projet :**
-
-- plan de conduite du changement ;
-- publics concernés ;
-- risques et réponses ;
-- indicateurs ;
-- planning pilote.
-
-**Validation : critère couvert.**
+| Compétence | Réalisation | Preuve | Niveau estimé | Limite | Action corrective |
+| --- | --- | --- | --- | --- | --- |
+| Collecter et restituer les besoins | Analyse du sujet, acteurs métiers, questionnaire-type, besoins classés et priorisés | Section 3.5, `docs/cadrage/questionnaire_phase_2.md` | Élevé | Entretiens simulés, pas de vrais utilisateurs FutureKawa | Faire valider le questionnaire par des responsables métier réels |
+| Concevoir une architecture applicative | Architecture pays + siège, APIs, MySQL par pays, MQTT, Docker Compose | Schéma d'architecture, `docker-compose.yml`, dossier technique | Élevé | Pas de haute disponibilité ni cloud réel | Ajouter supervision, sauvegardes, déploiement cloud |
+| Développer une application adaptée | Frontend React, APIs NestJS, module IoT ESP32/DHT11 MicroPython, MQTT bridge | Code `central/`, `country/`, `iot/`, captures UI/Thonny | Élevé | Pas d'application mobile native | Garder le responsive web ou ajouter mobile si demandé |
+| Développer une solution intégrée / ERP | Adaptateur ERP simulé stock/qualité avec exports JSON, sécurité par clé API et rôle | `country/api/src/erp`, `docs/erp/progiciel_integre.md`, captures ERP | Partiel à intermédiaire | Pas de SAP/Dynamics/Salesforce réel, pas d'ABAP/X++/Apex | Brancher un ERP réel ou développer le module dans le langage du progiciel cible |
+| Effectuer les tests | Plan de tests, tests automatisés métier/ERP, tests manuels API/MQTT/UI, anomalies et re-tests | `country/api/test/run-tests.ts`, `docs/tests/*`, logs Jenkins | Intermédiaire à élevé | Pas de suite E2E navigateur automatisée stable | Ajouter Playwright/Cypress en CI avec environnement de test contrôlé |
+| Appliquer l'intégration continue | Pipeline Jenkins avec validation Docker Compose, tests, builds API/frontend/bridge et artefacts | `Jenkinsfile`, captures Jenkins vertes | Intermédiaire à élevé | Pas de SonarQube ni rapport de couverture | Ajouter qualité de code, couverture et publication d'artefacts versionnés |
+| Rédiger la documentation | Rapport complet, README, documentation technique, utilisateur, IoT, tests et CI | `docs/`, présent rapport, captures | Élevé | Le PDF dépend des captures disponibles | Mettre à jour le PDF final après chaque nouvelle preuve |
+| Conduire le changement | Axes informer, communiquer, former, faire participer + modèle de William Bridges | Section 18, `docs/changement/plan_conduite_changement.md` | Élevé | Pas de mesure d'adoption réelle | Lancer un pilote et mesurer satisfaction/utilisation |
+| Sécurité | Exports ERP protégés par clé API et rôle, variables d'environnement, séparation Docker | Guard API key/rôle, configuration Docker Compose | Intermédiaire | Pas de JWT complet, HTTPS, rate limit ou audit centralisé | Ajouter JWT/SSO, HTTPS, rate limiting et journal d'audit |
 
 <div style="page-break-after: always;"></div>
 
