@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import re
+import shutil
 from pathlib import Path
 
 from reportlab.lib import colors
@@ -27,6 +28,20 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[2]
 MD_PATH = ROOT / "docs" / "rendu" / "MSPR_TPRE814_FutureKawa_rapport_complet.md"
 PDF_PATH = ROOT / "docs" / "rendu" / "MSPR_TPRE814_FutureKawa_rapport_complet.pdf"
+DELIVERABLE_PDF_PATH = (
+    ROOT
+    / "docs"
+    / "rendu"
+    / "MSPR_TPRE814_Thibault AUTEXIER - Issam HARNOUFI - Zaid ABABOU - Ali WARI.pdf"
+)
+
+
+TEAM_MEMBERS = [
+    "Thibault AUTEXIER",
+    "Issam HARNOUFI",
+    "Zaid ABABOU",
+    "Ali WARI",
+]
 
 
 def clean_inline(text: str) -> str:
@@ -129,7 +144,12 @@ def parse_markdown() -> list:
     code_buffer: list[str] = []
     in_code = False
 
-    for raw_line in MD_PATH.read_text(encoding="utf-8").splitlines():
+    lines = MD_PATH.read_text(encoding="utf-8").splitlines()
+    if lines and lines[0].startswith("# MSPR TPRE814"):
+        toc_index = next((index for index, value in enumerate(lines) if value.startswith("## Table des matières")), 0)
+        lines = lines[toc_index:]
+
+    for raw_line in lines:
         line = raw_line.rstrip()
 
         if line.startswith("```"):
@@ -216,6 +236,31 @@ def parse_markdown() -> list:
     return story
 
 
+def build_cover_page() -> list:
+    members = "<br/>".join(TEAM_MEMBERS)
+    return [
+        Spacer(1, 2.1 * cm),
+        Paragraph("MSPR TPRE814", STYLES["CoverKicker"]),
+        Spacer(1, 0.35 * cm),
+        Paragraph("Rapport complet du projet FutureKawa", STYLES["CoverTitle"]),
+        Spacer(1, 0.9 * cm),
+        Paragraph("Bloc 4", STYLES["CoverLabel"]),
+        Spacer(1, 0.14 * cm),
+        Paragraph("Concevoir et développer des solutions applicatives métier et spécifiques", STYLES["CoverSubtitle"]),
+        Spacer(1, 1.0 * cm),
+        Paragraph("Projet", STYLES["CoverLabel"]),
+        Spacer(1, 0.14 * cm),
+        Paragraph("Application IoT de supervision des stocks et des conditions de stockage", STYLES["CoverSubtitle"]),
+        Spacer(1, 1.0 * cm),
+        Paragraph("Équipe projet", STYLES["CoverLabel"]),
+        Spacer(1, 0.16 * cm),
+        Paragraph(members, STYLES["CoverNames"]),
+        Spacer(1, 1.2 * cm),
+        Paragraph("Livrable professionnel - Version PDF", STYLES["CoverMeta"]),
+        PageBreak(),
+    ]
+
+
 def on_page(canvas, doc):
     canvas.saveState()
     canvas.setFont("Helvetica", 8)
@@ -227,6 +272,62 @@ def on_page(canvas, doc):
 
 styles = getSampleStyleSheet()
 STYLES = {
+    "CoverKicker": ParagraphStyle(
+        "CoverKicker",
+        parent=styles["Title"],
+        fontName="Helvetica-Bold",
+        fontSize=18,
+        leading=22,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#1e3a8a"),
+        spaceAfter=4,
+    ),
+    "CoverTitle": ParagraphStyle(
+        "CoverTitle",
+        parent=styles["Title"],
+        fontName="Helvetica-Bold",
+        fontSize=26,
+        leading=32,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#0f172a"),
+        spaceAfter=8,
+    ),
+    "CoverLabel": ParagraphStyle(
+        "CoverLabel",
+        parent=styles["BodyText"],
+        fontName="Helvetica-Bold",
+        fontSize=10,
+        leading=13,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#64748b"),
+    ),
+    "CoverSubtitle": ParagraphStyle(
+        "CoverSubtitle",
+        parent=styles["BodyText"],
+        fontName="Helvetica-Bold",
+        fontSize=15,
+        leading=20,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#111827"),
+    ),
+    "CoverNames": ParagraphStyle(
+        "CoverNames",
+        parent=styles["BodyText"],
+        fontName="Helvetica",
+        fontSize=13,
+        leading=18,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#111827"),
+    ),
+    "CoverMeta": ParagraphStyle(
+        "CoverMeta",
+        parent=styles["BodyText"],
+        fontName="Helvetica",
+        fontSize=9,
+        leading=12,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#64748b"),
+    ),
     "H1": ParagraphStyle(
         "H1",
         parent=styles["Heading1"],
@@ -309,9 +410,11 @@ def main() -> None:
         title="MSPR TPRE814 FutureKawa - Rapport complet",
         author="FutureKawa",
     )
-    story = parse_markdown()
+    story = build_cover_page() + parse_markdown()
     doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
+    shutil.copyfile(PDF_PATH, DELIVERABLE_PDF_PATH)
     print(PDF_PATH)
+    print(DELIVERABLE_PDF_PATH)
 
 
 if __name__ == "__main__":

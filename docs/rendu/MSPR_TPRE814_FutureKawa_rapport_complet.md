@@ -1,8 +1,17 @@
-# MSPR TPRE814 - Rapport complet du projet FutureKawa
+# MSPR TPRE814
 
-**Bloc 4 - Concevoir et développer des solutions applicatives métier et spécifiques**  
-**Projet : Application IoT de supervision des stocks et des conditions de stockage**  
-**Équipe projet : Thibault AUTEXIER, Issam HARNOUFI, Zaid ABABOU, Ali WARI**  
+## Rapport complet du projet FutureKawa
+
+**Bloc 4 : Concevoir et développer des solutions applicatives métier et spécifiques**
+
+**Projet : Application IoT de supervision des stocks et des conditions de stockage**
+
+**Équipe projet :**
+
+- Thibault AUTEXIER
+- Issam HARNOUFI
+- Zaid ABABOU
+- Ali WARI
 
 ---
 
