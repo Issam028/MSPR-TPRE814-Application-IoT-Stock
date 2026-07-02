@@ -265,7 +265,7 @@ def build_story():
         Spacer(1, 0.8 * cm),
         P("Rendu technique et fonctionnel", "CoverSub"),
         Spacer(1, 2.4 * cm),
-        P("Équipe projet : Antoine GARNIER, Thibault AUTEXIER, Issam HARNOUFI, Zaid ABABOU, Ali WARI", "CoverSub"),
+        P("Équipe projet : Thibault AUTEXIER, Issam HARNOUFI, Zaid ABABOU, Ali WARI", "CoverSub"),
         P("Version du 30 juin 2026", "CoverSub"),
         Spacer(1, 1.1 * cm),
         P("Dossier rédigé à partir du projet livré, des captures applicatives et des preuves d'exécution Docker/MQTT.", "Caption"),

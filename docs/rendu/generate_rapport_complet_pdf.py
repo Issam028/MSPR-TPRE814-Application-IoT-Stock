@@ -225,7 +225,9 @@ def parse_markdown() -> list:
 
         if re.match(r"^\d+\. ", line):
             flush_paragraph(paragraph_buffer, story)
-            bullet_buffer.append(re.sub(r"^\d+\. ", "", line))
+            flush_bullets(bullet_buffer, story)
+            story.append(Paragraph(clean_inline(line), STYLES["NumberedItem"]))
+            story.append(Spacer(1, 0.06 * cm))
             continue
 
         paragraph_buffer.append(line)
@@ -238,25 +240,56 @@ def parse_markdown() -> list:
 
 def build_cover_page() -> list:
     members = "<br/>".join(TEAM_MEMBERS)
+    deliverable_name = DELIVERABLE_PDF_PATH.name
+    info_table = Table(
+        [
+            [
+                Paragraph("Bloc", STYLES["CoverTableLabel"]),
+                Paragraph("Bloc 4 - Concevoir et développer des solutions applicatives métier et spécifiques", STYLES["CoverTableValue"]),
+            ],
+            [
+                Paragraph("Projet", STYLES["CoverTableLabel"]),
+                Paragraph("Application IoT de supervision des stocks et des conditions de stockage", STYLES["CoverTableValue"]),
+            ],
+            [
+                Paragraph("Équipe", STYLES["CoverTableLabel"]),
+                Paragraph(members, STYLES["CoverTableValue"]),
+            ],
+            [
+                Paragraph("Livrable", STYLES["CoverTableLabel"]),
+                Paragraph(deliverable_name, STYLES["CoverTableValueSmall"]),
+            ],
+        ],
+        colWidths=[3.2 * cm, 12.0 * cm],
+    )
+    info_table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#e0ecff")),
+                ("BACKGROUND", (1, 0), (1, -1), colors.HexColor("#ffffff")),
+                ("BOX", (0, 0), (-1, -1), 0.7, colors.HexColor("#bfdbfe")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#dbeafe")),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 10),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ]
+        )
+    )
+    accent = Table([[""]], colWidths=[6.5 * cm], rowHeights=[0.08 * cm])
+    accent.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#1e3a8a"))]))
     return [
-        Spacer(1, 2.1 * cm),
+        Spacer(1, 1.45 * cm),
         Paragraph("MSPR TPRE814", STYLES["CoverKicker"]),
-        Spacer(1, 0.35 * cm),
+        Spacer(1, 0.22 * cm),
         Paragraph("Rapport complet du projet FutureKawa", STYLES["CoverTitle"]),
+        Spacer(1, 0.35 * cm),
+        accent,
+        Spacer(1, 1.05 * cm),
+        info_table,
         Spacer(1, 0.9 * cm),
-        Paragraph("Bloc 4", STYLES["CoverLabel"]),
-        Spacer(1, 0.14 * cm),
-        Paragraph("Concevoir et développer des solutions applicatives métier et spécifiques", STYLES["CoverSubtitle"]),
-        Spacer(1, 1.0 * cm),
-        Paragraph("Projet", STYLES["CoverLabel"]),
-        Spacer(1, 0.14 * cm),
-        Paragraph("Application IoT de supervision des stocks et des conditions de stockage", STYLES["CoverSubtitle"]),
-        Spacer(1, 1.0 * cm),
-        Paragraph("Équipe projet", STYLES["CoverLabel"]),
-        Spacer(1, 0.16 * cm),
-        Paragraph(members, STYLES["CoverNames"]),
-        Spacer(1, 1.2 * cm),
-        Paragraph("Livrable professionnel - Version PDF", STYLES["CoverMeta"]),
+        Paragraph("Livrable professionnel préparé pour la soutenance MSPR TPRE814", STYLES["CoverMeta"]),
         PageBreak(),
     ]
 
@@ -300,6 +333,30 @@ STYLES = {
         leading=13,
         alignment=TA_CENTER,
         textColor=colors.HexColor("#64748b"),
+    ),
+    "CoverTableLabel": ParagraphStyle(
+        "CoverTableLabel",
+        parent=styles["BodyText"],
+        fontName="Helvetica-Bold",
+        fontSize=9.5,
+        leading=12,
+        textColor=colors.HexColor("#1e3a8a"),
+    ),
+    "CoverTableValue": ParagraphStyle(
+        "CoverTableValue",
+        parent=styles["BodyText"],
+        fontName="Helvetica",
+        fontSize=11,
+        leading=15,
+        textColor=colors.HexColor("#111827"),
+    ),
+    "CoverTableValueSmall": ParagraphStyle(
+        "CoverTableValueSmall",
+        parent=styles["BodyText"],
+        fontName="Courier",
+        fontSize=7.8,
+        leading=10,
+        textColor=colors.HexColor("#111827"),
     ),
     "CoverSubtitle": ParagraphStyle(
         "CoverSubtitle",
@@ -365,6 +422,16 @@ STYLES = {
         fontSize=9.5,
         leading=13,
         alignment=TA_LEFT,
+        textColor=colors.HexColor("#111827"),
+    ),
+    "NumberedItem": ParagraphStyle(
+        "NumberedItem",
+        parent=styles["BodyText"],
+        fontName="Helvetica",
+        fontSize=9.3,
+        leading=12.5,
+        leftIndent=0.35 * cm,
+        firstLineIndent=0,
         textColor=colors.HexColor("#111827"),
     ),
     "TableCell": ParagraphStyle(
