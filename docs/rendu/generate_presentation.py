@@ -15,18 +15,18 @@ OUT = ROOT / "docs" / "rendu" / "MSPR_TPRE814_Thibault AUTEXIER - Issam HARNOUFI
 NOTES = ROOT / "docs" / "rendu" / "MSPR_TPRE814_presentation_notes.md"
 
 ASSETS = {
-    "architecture": ROOT / "docs" / "rendu" / "assets" / "architecture_flux.png",
-    "docker": ROOT / "docs" / "rendu" / "assets" / "docker_services.png",
-    "dashboard": ROOT / "docs" / "rendu" / "assets" / "dashboard_bresil.png",
-    "exploitations": ROOT / "docs" / "rendu" / "assets" / "exploitations_bresil.png",
-    "entrepots": ROOT / "docs" / "rendu" / "assets" / "entrepots_bresil.png",
-    "mqtt": ROOT / "docs" / "rendu" / "assets" / "mqtt_bridge_log.png",
-    "mcd": ROOT / "docs" / "database" / "mcd_futurekawa.png",
-    "wiring": ROOT / "docs" / "capture" / "esp32_dht11_wiring.png",
-    "thonny": ROOT / "docs" / "capture" / "Thonny.jpg",
-    "mail": ROOT / "docs" / "capture" / "Mail.png",
-    "erp_stock": ROOT / "docs" / "capture" / "erp_stock-movements.png",
-    "jenkins": ROOT / "docs" / "capture" / "jenkins 3.png",
+    "architecture": ROOT / "docs" / "rendu" / "presentation_images" / "01_flux_donnees_futurekawa.png",
+    "dashboard": ROOT / "docs" / "rendu" / "presentation_images" / "02_dashboard_bresil.png",
+    "exploitations": ROOT / "docs" / "rendu" / "presentation_images" / "03_page_exploitations_bresil.png",
+    "entrepots": ROOT / "docs" / "rendu" / "presentation_images" / "04_page_entrepots_bresil.png",
+    "mcd": ROOT / "docs" / "rendu" / "presentation_images" / "05_mcd_erd_futurekawa.png",
+    "wiring": ROOT / "docs" / "rendu" / "presentation_images" / "06_cablage_esp32_dht11.png",
+    "thonny": ROOT / "docs" / "rendu" / "presentation_images" / "07_thonny_micropython.png",
+    "mqtt": ROOT / "docs" / "rendu" / "presentation_images" / "08_mqtt_bridge_log.png",
+    "mail": ROOT / "docs" / "rendu" / "presentation_images" / "09_alerte_mail.png",
+    "erp_stock": ROOT / "docs" / "rendu" / "presentation_images" / "10_erp_stock_movements.png",
+    "jenkins": ROOT / "docs" / "rendu" / "presentation_images" / "12_jenkins_pipeline_vert.png",
+    "docker": ROOT / "docs" / "rendu" / "presentation_images" / "13_docker_services.png",
 }
 
 WIDE = (13.333333, 7.5)
